@@ -1,0 +1,9 @@
+.playwright-mcp/
+__pycache__/
+*.pyc
+
+# Build outputs. The decimated web GLB is committed so the viewer works from a
+# clone; the full-resolution GLB and the .blend are regenerated with `make`.
+build/*
+!build/f110_web.glb
+!build/parts.csv

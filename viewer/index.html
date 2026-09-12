@@ -1,0 +1,1147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F110-GE-129</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230C1214'/%3E%3Crect x='3' y='12' width='20' height='8' fill='%237C99A5'/%3E%3Crect x='23' y='10' width='6' height='12' fill='%23A6512C'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* Viewport reads as a test cell; the rail reads as a machined bezel. */
+    --void:#171F23;
+    --void-lift:#141C1F;
+    --panel:#C7CCC4;
+    --panel-dim:#B3B9AF;
+    --ink:#171C1B;
+    --ink-soft:#5A625C;
+    --rule:#9AA197;
+    --focus:#2E6B7A;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background:var(--void); color:var(--panel);
+    font-family:Archivo,system-ui,-apple-system,"Segoe UI",sans-serif;
+    font-size:14px; -webkit-font-smoothing:antialiased;
+    overflow:hidden;
+  }
+  canvas{display:block; touch-action:none}
+
+  #stage{position:fixed; inset:0 0 var(--rail-h,148px) 0}
+
+  /* ---- title block ---------------------------------------------------- */
+  #title{
+    position:fixed; top:22px; left:24px; z-index:5; pointer-events:none;
+    text-shadow:0 1px 14px rgba(0,0,0,.75);
+  }
+  #title h1{
+    margin:0; font-size:21px; font-weight:600; letter-spacing:-.015em;
+    font-variant-numeric:tabular-nums;
+  }
+  #title p{margin:2px 0 0; font-size:12.5px; font-weight:400; color:#93A09C}
+
+  /* ---- spec readout --------------------------------------------------- */
+  #spec{
+    position:fixed; top:22px; right:24px; z-index:5; pointer-events:none;
+    text-align:right; text-shadow:0 1px 14px rgba(0,0,0,.75);
+    display:grid; gap:1px;
+  }
+  #spec div{font-size:12.5px; color:#93A09C; font-variant-numeric:tabular-nums}
+  #spec b{color:var(--panel); font-weight:600}
+
+  /* ---- hovered part --------------------------------------------------- */
+  #probe{
+    position:fixed; right:24px; bottom:calc(var(--rail-h,148px) + 20px); z-index:5;
+    min-width:210px; max-width:min(320px,46vw); padding:11px 13px;
+    background:rgba(12,18,20,.86); backdrop-filter:blur(7px);
+    border:1px solid #2A3538; border-left:3px solid var(--probe-accent,#7C99A5);
+    opacity:0; transition:opacity .12s ease; pointer-events:none;
+  }
+  #probe.on{opacity:1}
+  #probe .nm{font-size:14px; font-weight:600; letter-spacing:-.01em; color:#E4E8E2;
+             word-break:break-word}
+  #probe .md{font-size:12px; color:#8C9894; margin-top:1px}
+  #probe dl{display:grid; grid-template-columns:auto 1fr; gap:3px 14px;
+            margin:9px 0 0; font-size:12px; font-variant-numeric:tabular-nums}
+  #probe dt{color:#78847F}
+  #probe dd{margin:0; text-align:right; color:#C7CCC4}
+
+  /* ---- station rail --------------------------------------------------- */
+  #rail{
+    position:fixed; left:0; right:0; bottom:0; z-index:6; height:var(--rail-h,148px);
+    background:var(--panel); color:var(--ink);
+    display:grid; grid-template-rows:auto auto 1fr; gap:0;
+    box-shadow:0 -18px 40px rgba(0,0,0,.5);
+  }
+  #railhead{
+    display:flex; align-items:baseline; justify-content:space-between;
+    gap:16px; padding:10px 24px 0;
+  }
+  #railhead h2{margin:0; font-size:12.5px; font-weight:600; letter-spacing:-.005em}
+  #railhead span{font-size:11.5px; color:var(--ink-soft)}
+
+  /* the bands: one per gas-path module, laid out on the true mm axis */
+  #bands{position:relative; height:38px; margin:9px 24px 0}
+  .band{
+    position:absolute; top:0; bottom:0; border:none; padding:0;
+    background:var(--c); cursor:pointer; font:inherit; color:#FBFCFA;
+    display:flex; align-items:center; justify-content:center;
+    font-size:11.5px; font-weight:600; letter-spacing:-.005em;
+    overflow:hidden; white-space:nowrap;
+    outline-offset:2px;
+    transition:filter .13s ease, opacity .13s ease;
+  }
+  .band + .band{border-left:1px solid rgba(255,255,255,.34)}
+  .band:hover{filter:brightness(1.13)}
+  .band:focus-visible{outline:2px solid var(--focus)}
+  .band[aria-pressed="false"]{opacity:.24; filter:grayscale(1)}
+  .band .ct{opacity:.72; font-weight:400; margin-left:6px}
+
+  /* the mm scale under the bands */
+  #scale{position:relative; height:19px; margin:0 24px}
+  .tick{position:absolute; top:0; width:1px; height:5px; background:var(--rule)}
+  .tick.major{height:8px; background:var(--ink-soft)}
+  .tnum{
+    position:absolute; top:8px; font-size:10px; color:var(--ink-soft);
+    transform:translateX(-50%); font-variant-numeric:tabular-nums;
+  }
+
+  /* structural modules + cutaway live on one row */
+  #controls{
+    display:flex; align-items:center; gap:18px; flex-wrap:wrap;
+    padding:0 24px 12px; margin-top:6px;
+  }
+  #chips{display:flex; gap:7px; flex-wrap:wrap}
+  .chip{
+    border:1px solid var(--rule); background:transparent; color:var(--ink);
+    font:inherit; font-size:11.5px; font-weight:500; padding:4px 10px;
+    cursor:pointer; outline-offset:2px; transition:background .13s ease;
+  }
+  .chip:hover{background:var(--panel-dim)}
+  .chip:focus-visible{outline:2px solid var(--focus)}
+  .chip[aria-pressed="false"]{color:#8D948B; border-color:#BDC3B9}
+  .chip .sw{display:inline-block; width:7px; height:7px; margin-right:6px;
+            background:var(--c); vertical-align:baseline}
+  .chip[aria-pressed="false"] .sw{background:#BDC3B9}
+
+  #throttle{display:flex; border:1px solid var(--ink); flex:0 0 auto}
+  .det{
+    border:none; border-left:1px solid var(--rule); background:transparent;
+    color:var(--ink); font:inherit; font-size:11.5px; font-weight:500;
+    padding:5px 12px; cursor:pointer; outline-offset:-2px;
+    transition:background .14s ease, color .14s ease;
+  }
+  .det:first-child{border-left:none}
+  .det:hover{background:var(--panel-dim)}
+  .det:focus-visible{outline:2px solid var(--focus)}
+  .det[aria-pressed="true"]{background:var(--ink); color:var(--panel)}
+  .det.ab[aria-pressed="true"]{background:#9C3F1E; color:#FFF1E6}
+  #airflow{
+    border:1px solid var(--rule); background:transparent; color:var(--ink);
+    font:inherit; font-size:11.5px; font-weight:500; padding:4px 11px;
+    cursor:pointer; outline-offset:2px; flex:0 0 auto;
+  }
+  #airflow:hover{background:var(--panel-dim)}
+  #airflow:focus-visible{outline:2px solid var(--focus)}
+  #airflow[aria-pressed="true"]{background:var(--ink); color:var(--panel)}
+
+  /* temperature key, only up while the airflow overlay is on */
+  #tkey{
+    position:fixed; left:24px; bottom:calc(var(--rail-h,148px) + 20px); z-index:5;
+    opacity:0; transition:opacity .25s ease; pointer-events:none;
+  }
+  #tkey.on{opacity:1}
+  #tkey .bar{
+    width:210px; height:7px;
+    background:linear-gradient(90deg,#2A5FE8,#40B8EE,#F2DC59,#FA852A,#F23A1E,#FFDCBE);
+  }
+  #tkey .lbl{
+    display:flex; justify-content:space-between; width:210px; margin-top:4px;
+    font-size:10.5px; color:#8C9894; font-variant-numeric:tabular-nums;
+  }
+  #tkey .cap{font-size:11px; color:#A9B4B0; margin-bottom:5px}
+
+  #rebuild{
+    border:1px solid var(--rule); background:transparent; color:var(--ink);
+    font:inherit; font-size:11.5px; font-weight:500; padding:4px 11px;
+    cursor:pointer; outline-offset:2px; flex:0 0 auto;
+  }
+  #rebuild:hover{background:var(--panel-dim)}
+  #rebuild:focus-visible{outline:2px solid var(--focus)}
+
+  /* N1/N2 spool readout, sits under the spec block */
+  #spool{
+    position:fixed; top:104px; right:24px; z-index:5; pointer-events:none;
+    text-align:right; opacity:0; transition:opacity .3s ease;
+    text-shadow:0 1px 14px rgba(0,0,0,.75);
+  }
+  #spool.on{opacity:1}
+  #spool div{font-size:12.5px; color:#93A09C; font-variant-numeric:tabular-nums}
+  #spool b{color:#D9C7A8; font-weight:600}
+  #spool b.hot{color:#E08A55}
+
+  #cut{display:flex; align-items:center; gap:10px; flex:1 1 230px; min-width:190px}
+  #cut label{font-size:11.5px; font-weight:500; white-space:nowrap}
+  #cut output{font-size:11.5px; color:var(--ink-soft); font-variant-numeric:tabular-nums;
+              min-width:56px; text-align:right}
+  #cutrange{flex:1; accent-color:#8C4A2E; min-width:80px}
+  #reset{
+    border:1px solid var(--rule); background:transparent; color:var(--ink);
+    font:inherit; font-size:11.5px; font-weight:500; padding:4px 11px; cursor:pointer;
+    outline-offset:2px;
+  }
+  #reset:hover{background:var(--panel-dim)}
+  #reset:focus-visible{outline:2px solid var(--focus)}
+
+  /* ---- loading -------------------------------------------------------- */
+  #load{
+    position:fixed; inset:0; z-index:9; display:grid; place-content:center;
+    gap:12px; background:var(--void); text-align:center;
+    transition:opacity .4s ease;
+  }
+  #load.done{opacity:0; pointer-events:none}
+  #load p{margin:0; font-size:13px; color:#8C9894; font-variant-numeric:tabular-nums}
+  #bar{width:210px; height:2px; background:#20292C; overflow:hidden}
+  #bar i{display:block; height:100%; width:0%; background:#7C99A5; transition:width .2s ease}
+  #err{color:#D08A6A; font-size:12.5px; max-width:330px; line-height:1.5}
+
+  @media (max-width:720px){
+    :root{--rail-h:184px}
+    #title h1{font-size:17px}
+    #spec div:nth-child(n+3){display:none}
+    #probe{left:16px; right:16px; max-width:none}
+    #railhead,#bands,#scale,#controls{margin-left:0; margin-right:0}
+    #railhead{padding-inline:16px}
+    #bands,#scale{margin-inline:16px}
+    #controls{padding-inline:16px}
+    .band{font-size:10.5px}
+    .band .ct{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition-duration:.01ms !important}
+  }
+</style>
+</head>
+<body>
+
+<div id="stage"></div>
+
+<div id="title">
+  <h1>F110-GE-129</h1>
+  <p>Augmented low-bypass turbofan</p>
+</div>
+
+<div id="spec">
+  <div><b id="s-len">—</b> mm long</div>
+  <div><b id="s-dia">—</b> mm fan</div>
+  <div><b id="s-air">—</b> airfoils</div>
+  <div><b id="s-parts">—</b> parts</div>
+</div>
+
+<div id="spool" aria-live="off">
+  <div><b id="n1">0.0</b> % N1 &nbsp;fan</div>
+  <div><b id="n2">0.0</b> % N2 &nbsp;core</div>
+  <div><b id="egt" class="hot">—</b> °C &nbsp;EGT</div>
+</div>
+
+<div id="tkey">
+  <div class="cap">Total air temperature</div>
+  <div class="bar"></div>
+  <div class="lbl"><span>15 °C</span><span>800</span><span>1750 °C</span></div>
+</div>
+
+<div id="probe" aria-live="polite">
+  <div class="nm" id="p-name"></div>
+  <div class="md" id="p-mod"></div>
+  <dl>
+    <dt>Station</dt><dd id="p-sta"></dd>
+    <dt>Material</dt><dd id="p-mat"></dd>
+    <dt id="p-cl">Count</dt><dd id="p-cnt"></dd>
+  </dl>
+</div>
+
+<div id="rail">
+  <div id="railhead">
+    <h2>Axial station</h2>
+    <span id="railnote">Click a module to hide it. Drag the engine to orbit.</span>
+  </div>
+  <div id="bands"></div>
+  <div id="scale"></div>
+  <div id="controls">
+    <div id="throttle" role="group" aria-label="Throttle">
+      <button class="det" type="button" data-d="0" aria-pressed="true">Off</button>
+      <button class="det" type="button" data-d="1" aria-pressed="false">Idle</button>
+      <button class="det" type="button" data-d="2" aria-pressed="false">Mil</button>
+      <button class="det ab" type="button" data-d="3" aria-pressed="false">Max A/B</button>
+    </div>
+    <button id="rebuild" type="button">Replay build</button>
+    <button id="airflow" type="button" aria-pressed="false">Airflow</button>
+    <div id="chips"></div>
+    <div id="cut">
+      <label for="cutrange">Cutaway</label>
+      <input id="cutrange" type="range" min="0" max="100" value="100" step="1">
+      <output id="cutval">off</output>
+    </div>
+    <button id="reset" type="button">Reset view</button>
+  </div>
+</div>
+
+<div id="load">
+  <p id="loadtxt">Loading engine…</p>
+  <div id="bar"><i></i></div>
+  <p id="err"></p>
+</div>
+
+<script type="importmap">
+{"imports":{
+  "three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+  "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/",
+  "animejs":"https://cdn.jsdelivr.net/npm/animejs@4.0.2/+esm"
+}}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {DRACOLoader} from 'three/addons/loaders/DRACOLoader.js';
+import {animate, utils} from 'animejs';
+
+const MM = 0.001;
+const $ = s => document.querySelector(s);
+
+// Same shell set the Blender cutaway peels away: sectioning everything leaves
+// the far half of the casings occluding the core.
+const SHELL = ['casing_','flange_','inlet_case','inlet_lip','bypass_inner_wall',
+  'bypass_struts','augmentor_liner','combustor_liner_outer','nozzle_ext_flaps',
+  'nozzle_seals','nozzle_flaps_convergent','nozzle_flaps_divergent',
+  'turbine_blade_outer_air_seals','splitter','mixer'];
+const isShell = n => SHELL.some(p => n.includes(p));
+
+// The two concentric spools. The LP spool carries the fan and the low turbine;
+// the HP spool carries the compressor and the high turbine, and runs faster.
+const IS_LP = n => /^(spinner|fan_disc_assembly|fan_interstage_seals|shaft_lp|lpt_disc_assembly)$/.test(n)
+                || /^blades_(fan|lpt)_r\d$/.test(n);
+const IS_HP = n => /^(hpc_drum|hpc_front_cone|hpc_rear_cone|hpc_interstage_seals|shaft_hp|hpt_disc)$/.test(n)
+                || /^blades_(hpc|hpt)_r\d$/.test(n);
+
+// Throttle detents: fan speed, core speed, augmentor, turbine gas temperature.
+const DETENT = [
+  {name:'Off',     n1:0,    n2:0,    ab:0,   egt:0},
+  {name:'Idle',    n1:0.28, n2:0.61, ab:0,   egt:430},
+  {name:'Mil',     n1:0.97, n2:0.99, ab:0,   egt:905},
+  {name:'Max A/B', n1:1.00, n2:1.00, ab:1,   egt:1160},
+];
+
+// Band boundaries come from real flowpath stations, not bounding boxes, so the
+// rail reads as the gas path rather than as overlapping object extents.
+const BANDS = [
+  ['01 Inlet and Fan',       'inlet_lip',      'fan_frame'],
+  ['02 HP Compressor',       'fan_frame',      'combustor_front'],
+  ['03 Combustor',           'combustor_front','combustor_exit'],
+  ['04 Turbines',            'combustor_exit', 'turbine_frame'],
+  ['05 Augmentor',           'turbine_frame',  'augmentor_exit'],
+  ['06 Nozzle',              'augmentor_exit', 'nozzle_exit'],
+];
+
+let scene, camera, renderer, controls, root, raycaster, plane;
+let data, byModule = new Map(), meshInfo = new Map(), pickable = [];
+let hidden = new Set(), hovered = null, corners = [], viewDir = null;
+let lpSpool, hpSpool, plume, plumeMat, plumeLight, hotMats = [];
+let detent = 0, assembling = false;
+let flow = null, flowOn = false;
+const rpm = {n1:0, n2:0, ab:0, egt:0};   // animated by the throttle
+const clock = new THREE.Clock();
+
+init();
+
+async function init(){
+  const stage = $('#stage');
+  renderer = new THREE.WebGLRenderer({antialias:true, powerPreference:'high-performance'});
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setSize(stage.clientWidth, stage.clientHeight);
+  renderer.localClippingEnabled = true;
+  renderer.toneMapping = THREE.LinearToneMapping;
+  renderer.toneMappingExposure = 0.88;
+  stage.appendChild(renderer.domElement);
+
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x171F23);
+
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromEquirectangular(studioEnv()).texture;
+
+  camera = new THREE.PerspectiveCamera(26, stage.clientWidth/stage.clientHeight, 0.05, 120);
+
+  scene.environmentIntensity = 0.88;
+  const key = new THREE.DirectionalLight(0xfff2e4, 1.15); key.position.set(-3,5,6);
+  const fill = new THREE.DirectionalLight(0xc3d6e0, 1.05); fill.position.set(4,-3.5,-3);
+  const rim  = new THREE.DirectionalLight(0xffffff, 0.85); rim.position.set(5,2.4,-6);
+  // Hemispheric ambient guarantees every surface normal receives some light,
+  // so no face can fall to pure black regardless of how the exporter left its
+  // normals. With metalness low these carry real diffuse weight.
+  const hemi = new THREE.HemisphereLight(0xDCE6EA, 0x8A9298, 0.85);
+  const amb  = new THREE.AmbientLight(0xB8C2C7, 0.26);
+  scene.add(key, fill, rim, hemi, amb);
+
+  controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.075;
+  controls.minDistance = 1.2;
+  controls.maxDistance = 26;
+
+  raycaster = new THREE.Raycaster();
+  plane = new THREE.Plane(new THREE.Vector3(0,0,-1), 10);
+
+  try{
+    data = await (await fetch('parts.json')).json();
+  }catch(e){
+    return fail('Could not read parts.json. Serve this folder over HTTP — run <code>make viewer</code> from the project root.');
+  }
+  fillSpec();
+  buildRail();
+
+  const draco = new DRACOLoader().setDecoderPath(
+    'https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/libs/draco/gltf/');
+  const loader = new GLTFLoader().setDRACOLoader(draco);
+
+  loader.load('../build/f110_web.glb',
+    gltf => ready(gltf.scene),
+    ev => {
+      if(!ev.total) return;
+      const pct = Math.round(ev.loaded/ev.total*100);
+      $('#bar i').style.width = pct + '%';
+      $('#loadtxt').textContent = `Loading engine… ${pct}%`;
+    },
+    () => fail('Could not load <code>build/f110_web.glb</code>. Run <code>make web</code> to generate it.')
+  );
+}
+
+// A studio sphere built in a canvas. RoomEnvironment's black floor turns the
+// underside of a metallic=1 surface to pure black; this keeps a lit ground and
+// puts one soft highlight where the key light should be.
+function studioEnv(){
+  const w = 1024, h = 512;
+  const cv = document.createElement('canvas');
+  cv.width = w; cv.height = h;
+  const g = cv.getContext('2d');
+
+  const grad = g.createLinearGradient(0, 0, 0, h);
+  grad.addColorStop(0.00, '#D6DDE0');
+  grad.addColorStop(0.36, '#BFC7CB');
+  grad.addColorStop(0.52, '#AAB2B7');
+  grad.addColorStop(0.72, '#9AA2A7');
+  grad.addColorStop(1.00, '#939A9F');
+  g.fillStyle = grad;
+  g.fillRect(0, 0, w, h);
+
+  // key: a soft bright panel high and to one side
+  const key = g.createRadialGradient(w*0.28, h*0.22, 0, w*0.28, h*0.22, w*0.20);
+  key.addColorStop(0, 'rgba(255,250,242,0.30)');
+  key.addColorStop(1, 'rgba(255,252,246,0)');
+  g.fillStyle = key;
+  g.fillRect(0, 0, w, h);
+
+  // cool rim from behind, so edges separate from the dark viewport
+  const rim = g.createRadialGradient(w*0.78, h*0.34, 0, w*0.78, h*0.34, w*0.15);
+  rim.addColorStop(0, 'rgba(196,218,230,0.26)');
+  rim.addColorStop(1, 'rgba(196,218,230,0)');
+  g.fillStyle = rim;
+  g.fillRect(0, 0, w, h);
+
+  const tex = new THREE.CanvasTexture(cv);
+  tex.mapping = THREE.EquirectangularReflectionMapping;
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+function fail(html){
+  $('#loadtxt').textContent = 'Nothing to show yet';
+  $('#bar').style.display = 'none';
+  $('#err').innerHTML = html;
+}
+
+function fillSpec(){
+  $('#s-len').textContent = data.length.toLocaleString();
+  $('#s-dia').textContent = data.diameter.toLocaleString();
+  $('#s-air').textContent = data.airfoils.toLocaleString();
+  $('#s-parts').textContent = Object.keys(data.parts).length;
+}
+
+function ready(model){
+  root = model;
+
+  root.traverse(o => {
+    if(!o.isMesh) return;
+    const info = data.parts[o.name];
+    if(!info) return;
+    // Clone so clipping and highlight can be set per part rather than per material.
+    // Revolved shells arrive with normals averaged across their profile
+    // corners, which leaves large faces shading to black no matter what the
+    // material or lights do. Flat face normals are derived from winding, so
+    // they are correct by construction -- and machined hardware reads fine
+    // flat-shaded at 96 segments around. Airfoils keep their smooth normals.
+    if(!/^(blades_|vanes_|spinner)/.test(o.name)){
+      o.geometry = o.geometry.toNonIndexed();
+      o.geometry.computeVertexNormals();
+    }
+    o.material = o.material.clone();
+    // glTF cannot carry the node-driven colour and roughness used for the
+    // Blender renders, so every material arrives at roughness 1.0. Material
+    // names do survive, so reapply the alloy table from spec.py by name.
+    const alloy = data.palette[info.mat];
+    if(alloy){
+      // A near-mirror only ever shows sky or void, leaving no mid-tone to read
+      // form against. Dropping metalness lets diffuse shading carry the
+      // surface. The alloy hues are kept but lifted, since these values were
+      // tuned as reflectance rather than albedo.
+      const k = alloy.metal > 0.5 ? 1.42 : 1.0;
+      o.material.color.setRGB(
+        Math.min(alloy.rgb[0] * k, 0.92),
+        Math.min(alloy.rgb[1] * k, 0.92),
+        Math.min(alloy.rgb[2] * k, 0.92),
+        THREE.LinearSRGBColorSpace);
+      o.material.metalness = alloy.metal * 0.28;
+      o.material.roughness = THREE.MathUtils.clamp(alloy.rough + 0.22, 0.45, 0.85);
+    }
+    // Guaranteed tonal floor. Emissive is added independently of lights and
+    // of the surface normal, so it lifts faces that the environment and the
+    // lights leave black -- which some of the exported shells stubbornly are.
+    // This is what keeps the hull readable instead of clipping to black.
+    const c = o.material.color;
+    o.material.emissive.setRGB(c.r * 0.22, c.g * 0.22, c.b * 0.23);
+    o.material.userData.baseEmissive = o.material.emissive.clone();
+    if(isShell(o.name)) o.material.clippingPlanes = [plane];
+    o.material.side = THREE.FrontSide;
+    meshInfo.set(o, info);
+    pickable.push(o);
+    if(!byModule.has(info.m)) byModule.set(info.m, []);
+    byModule.get(info.m).push(o);
+  });
+
+  // Centre on the engine so orbiting feels like turning the object, not the world.
+  buildSpools();
+  const box = new THREE.Box3().setFromObject(root);
+  const c = box.getCenter(new THREE.Vector3());
+  root.position.sub(c);
+  scene.add(root);
+  buildPlume();
+
+  const size = box.getSize(new THREE.Vector3());
+  corners = [];
+  for(const sx of [-.5,.5]) for(const sy of [-.5,.5]) for(const sz of [-.5,.5]){
+    corners.push(new THREE.Vector3(size.x*sx, size.y*sy, size.z*sz));
+  }
+  viewDir = new THREE.Vector3(0.17, -0.27, -0.948).normalize();
+  resetView();
+
+  addEventListener('resize', onResize);
+  renderer.domElement.addEventListener('pointermove', onMove);
+  renderer.domElement.addEventListener('pointerleave', () => setProbe(null));
+  buildFlow();
+  wireThrottle();
+  window.__dbg = {scene, camera, renderer, root, plane, byModule};
+  $('#load').classList.add('done');
+  renderer.setAnimationLoop(tick);
+  assemble();
+}
+
+// Rotor meshes move into two groups so each spool can turn at its own speed.
+// Geometry is baked at export, so reparenting preserves world position exactly.
+function buildSpools(){
+  lpSpool = new THREE.Group();
+  hpSpool = new THREE.Group();
+  root.add(lpSpool, hpSpool);
+  for(const m of [...pickable]){
+    if(IS_LP(m.name)) lpSpool.attach(m);
+    else if(IS_HP(m.name)) hpSpool.attach(m);
+  }
+  for(const m of pickable){
+    const info = meshInfo.get(m);
+    if(info && (info.mat === 'hot_nickel' || info.mat === 'thermal_barrier')){
+      hotMats.push(m.material);
+    }
+  }
+}
+
+// Afterburner plume. Two nested shells rather than one: a narrow white-hot
+// core inside a wider blue-violet envelope, so it reads as a volume instead of
+// a balloon. Shock diamonds are the standing waves in the supersonic core.
+function plumeShell(rScale, lScale, gain, seed){
+  const pts = [];
+  for(let i = 0; i <= 46; i++){
+    const t = i/46;
+    const neck = 1 - 0.22*Math.exp(-Math.pow((t-0.12)/0.09, 2));
+    const r = (0.030 + 0.330*Math.pow(1-t, 1.45)) * neck * rScale;
+    pts.push(new THREE.Vector2(Math.max(r, 0.008), t*4.2*lScale));
+  }
+  const geo = new THREE.LatheGeometry(pts, 44);
+  geo.rotateZ(-Math.PI/2);
+
+  const mat = new THREE.ShaderMaterial({
+    transparent:true, depthWrite:false, blending:THREE.AdditiveBlending,
+    side:THREE.DoubleSide,
+    uniforms:{
+      uTime:{value:0}, uAb:{value:0}, uGain:{value:gain}, uSeed:{value:seed},
+      uCore:{value:new THREE.Color(0xFFF4DC)},
+      uMid:{value:new THREE.Color(0x6E8CFF)},
+      uTail:{value:new THREE.Color(0x3B1D5E)},
+    },
+    vertexShader:`
+      varying vec2 vUv; varying vec3 vN; varying vec3 vV;
+      void main(){
+        vUv = uv;
+        vN = normalize(normalMatrix * normal);
+        vec4 mv = modelViewMatrix * vec4(position,1.0);
+        vV = -mv.xyz;
+        gl_Position = projectionMatrix * mv;
+      }`,
+    fragmentShader:`
+      uniform float uTime, uAb, uGain, uSeed;
+      uniform vec3 uCore, uMid, uTail;
+      varying vec2 vUv; varying vec3 vN; varying vec3 vV;
+      void main(){
+        float t = vUv.y;
+        float reach = mix(0.22, 1.0, uAb);
+        float env = smoothstep(0.0, 0.02, t) * pow(max(0.0, 1.0 - t/reach), 1.5);
+        // standing shock cells, strongest just aft of the nozzle
+        float d = pow(max(0.0, sin(t*30.0 - uTime*1.5 + uSeed)), 8.0)
+                * smoothstep(0.62, 0.06, t);
+        float flick = 0.90 + 0.10*sin(uTime*37.0 + t*23.0 + uSeed);
+        // edge-on rays cross more of the volume, so the silhouette burns brighter
+        float edge = pow(1.0 - abs(dot(normalize(vN), normalize(vV))), 1.7);
+        float a = env * (0.08 + 0.92*edge) * (0.38 + 0.95*d) * flick * uAb * uGain;
+        vec3 col = mix(uCore, uMid, smoothstep(0.015, 0.28, t));
+        col = mix(col, uTail, smoothstep(0.30, 0.88, t));
+        col = mix(col, uCore, clamp(d*0.92, 0.0, 1.0));
+        gl_FragColor = vec4(col, clamp(a, 0.0, 1.0));
+      }`,
+  });
+  const m = new THREE.Mesh(geo, mat);
+  m.raycast = () => {};
+  return m;
+}
+
+function buildPlume(){
+  plume = new THREE.Group();
+  const outer = plumeShell(1.00, 1.00, 0.62, 0.0);
+  const inner = plumeShell(0.46, 0.66, 1.15, 2.1);
+  plume.add(outer, inner);
+  plumeMat = [outer.material, inner.material];
+  plume.position.x = data.x_rear * MM;
+  plume.visible = false;
+  root.add(plume);
+
+  plumeLight = new THREE.PointLight(0xFF8A44, 0, 7, 2);
+  plumeLight.position.set(data.x_rear*MM + 0.45, 0, 0);
+  root.add(plumeLight);
+}
+
+// Build order. Not a flat stagger -- the engine assembles the way one is
+// actually built: the spool spine first, then the gas path front to back, then
+// the accessories, and finally the casings closing over the top.
+const BUILD = [
+  {key:'08 Shafts and Bearings', at:0,    step:110, from:'axis'},
+  {key:'01 Inlet and Fan',       at:1100, step:105, from:'radial'},
+  {key:'02 HP Compressor',       at:2500, step:62,  from:'radial'},
+  {key:'03 Combustor',           at:4150, step:135, from:'radial'},
+  {key:'04 Turbines',            at:5200, step:110, from:'radial'},
+  {key:'05 Augmentor',           at:6400, step:175, from:'radial'},
+  {key:'06 Nozzle',              at:7200, step:130, from:'aft'},
+  {key:'09 Accessories',         at:8100, step:140, from:'below'},
+  {key:'07 Casings and Frames',  at:8800, step:105, from:'shell'},
+];
+const BUILD_MS = 11600;
+
+function partOffset(mode, ry, rz){
+  switch(mode){
+    case 'axis':   return [-3.4, ry*0.10, rz*0.10];
+    case 'aft':    return [ 2.9, ry*0.35, rz*0.35];
+    case 'below':  return [ 0.0, -2.10,   rz*0.30];
+    case 'shell':  return [ 0.0, ry*2.75, rz*2.75];
+    default:       return [(Math.random()-0.5)*0.45, ry*1.65, rz*1.65];
+  }
+}
+
+function assemble(){
+  if(assembling) return;
+  assembling = true;
+  utils.remove(camera.position); utils.remove(controls.target);
+
+  for(const stage of BUILD){
+    const list = (byModule.get(stage.key) || [])
+      .slice()
+      .sort((a,b) => meshInfo.get(a).x0 - meshInfo.get(b).x0);
+
+    list.forEach((m, i) => {
+      const c = m.geometry.boundingSphere
+        || (m.geometry.computeBoundingSphere(), m.geometry.boundingSphere);
+      let ry = c.center.y, rz = c.center.z;
+      const rl = Math.hypot(ry, rz);
+      if(rl < 1e-3){ const a = Math.random()*Math.PI*2; ry = Math.cos(a); rz = Math.sin(a); }
+      else { ry /= rl; rz /= rl; }
+
+      const [ox, oy, oz] = partOffset(stage.from, ry, rz);
+      m.position.set(ox, oy, oz);
+      m.rotation.x = (Math.random() - 0.5) * 1.5;
+      m.material.transparent = true;
+      m.material.opacity = 0;
+
+      const delay = stage.at + i*stage.step;
+      // Long travel, soft landing: the piece is legible the whole way in.
+      animate(m.position, {x:0, y:0, z:0, duration:1750, delay, ease:'outQuint'});
+      animate(m.rotation, {x:0, duration:1900, delay, ease:'outQuint'});
+      animate(m.material, {opacity:1, duration:620, delay: delay + 90, ease:'outQuad'});
+    });
+
+    // the module's band on the rail lights up as its parts land
+    const band = document.querySelector(`.band[data-key="${CSS.escape(stage.key)}"]`)
+              || document.querySelector(`.chip[data-key="${CSS.escape(stage.key)}"]`);
+    if(band){
+      band.style.opacity = '0.18';
+      animate(band.style, {opacity:'1', duration:700,
+                           delay: stage.at + list.length*stage.step*0.5, ease:'outQuad'});
+    }
+  }
+
+  // a slow dolly in over the whole build, so it plays as one shot
+  const end = fitDistance(viewDir);
+  const dir = viewDir.clone().negate();
+  const start = dir.clone().multiplyScalar(end*2.15);
+  camera.position.copy(start);
+  controls.target.set(0, 0, 0);
+  const p = dir.clone().multiplyScalar(end);
+  animate(camera.position, {x:p.x, y:p.y, z:p.z,
+                            duration:BUILD_MS, ease:'inOutQuad'});
+
+  setTimeout(() => {
+    for(const m of pickable){ m.material.transparent = false; m.material.opacity = 1; }
+    assembling = false;
+  }, BUILD_MS + 400);
+}
+
+// ---- airflow -----------------------------------------------------------
+// Particles ride the real annulus: the same hub and tip radii the blades were
+// built from. Colour is total air temperature, so the compressor warming up and
+// the combustor spike are visible rather than implied.
+const TEMP_LUT = [
+  [  15, 0.16, 0.37, 0.91],
+  [ 120, 0.25, 0.72, 0.93],
+  [ 420, 0.95, 0.86, 0.35],
+  [ 900, 0.98, 0.52, 0.16],
+  [1350, 0.95, 0.23, 0.12],
+  [1750, 1.00, 0.86, 0.74],
+];
+
+function tempColor(T, out){
+  const L = TEMP_LUT;
+  if(T <= L[0][0]){ out[0]=L[0][1]; out[1]=L[0][2]; out[2]=L[0][3]; return; }
+  for(let i = 1; i < L.length; i++){
+    if(T <= L[i][0] || i === L.length-1){
+      const a = L[i-1], b = L[i];
+      const f = Math.min(1, Math.max(0, (T - a[0])/(b[0] - a[0])));
+      out[0] = a[1] + (b[1]-a[1])*f;
+      out[1] = a[2] + (b[2]-a[2])*f;
+      out[2] = a[3] + (b[3]-a[3])*f;
+      return;
+    }
+  }
+}
+
+function sampleTrack(track, x){
+  if(x <= track[0][0]) return [track[0][1], track[0][2]];
+  for(let i = 1; i < track.length; i++){
+    if(x <= track[i][0]){
+      const a = track[i-1], b = track[i];
+      const f = (x - a[0])/(b[0] - a[0]);
+      return [a[1] + (b[1]-a[1])*f, a[2] + (b[2]-a[2])*f];
+    }
+  }
+  const l = track[track.length-1];
+  return [l[1], l[2]];
+}
+
+function sampleTemp(track, x){
+  if(x <= track[0][0]) return track[0][1];
+  for(let i = 1; i < track.length; i++){
+    if(x <= track[i][0]){
+      const a = track[i-1], b = track[i];
+      return a[1] + (b[1]-a[1])*((x - a[0])/(b[0] - a[0]));
+    }
+  }
+  return track[track.length-1][1];
+}
+
+function buildFlow(){
+  const N_CORE = 1800, N_BYP = 900, N = N_CORE + N_BYP;
+  const pos = new Float32Array(N*3);
+  const col = new Float32Array(N*3);
+  const alp = new Float32Array(N);
+  const siz = new Float32Array(N);
+  const st  = {p:new Float32Array(N), th:new Float32Array(N),
+               span:new Float32Array(N), core:new Uint8Array(N)};
+  for(let i = 0; i < N; i++){
+    st.p[i]    = Math.random();
+    st.th[i]   = Math.random()*Math.PI*2;
+    st.span[i] = 0.20 + Math.random()*0.58;
+    st.core[i] = i < N_CORE ? 1 : 0;
+    siz[i]     = st.core[i] ? 0.95 + Math.random()*0.75 : 0.80 + Math.random()*0.60;
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  g.setAttribute('aColor',   new THREE.BufferAttribute(col, 3));
+  g.setAttribute('aAlpha',   new THREE.BufferAttribute(alp, 1));
+  g.setAttribute('aSize',    new THREE.BufferAttribute(siz, 1));
+
+  const mat = new THREE.ShaderMaterial({
+    transparent:true, depthWrite:false, blending:THREE.AdditiveBlending,
+    uniforms:{uOpacity:{value:0}},
+    vertexShader:`
+      attribute vec3 aColor; attribute float aAlpha; attribute float aSize;
+      varying vec3 vC; varying float vA;
+      void main(){
+        vC = aColor; vA = aAlpha;
+        vec4 mv = modelViewMatrix * vec4(position, 1.0);
+        gl_PointSize = aSize * (260.0 / max(-mv.z, 0.1));
+        gl_Position = projectionMatrix * mv;
+      }`,
+    fragmentShader:`
+      uniform float uOpacity;
+      varying vec3 vC; varying float vA;
+      void main(){
+        vec2 d = gl_PointCoord - vec2(0.5);
+        float r = dot(d, d);
+        if(r > 0.25) discard;
+        // tighter core keeps the sprite from bleeding past a wall edge
+        float a = smoothstep(0.20, 0.0, r) * vA * uOpacity * 0.30;
+        gl_FragColor = vec4(vC, a);
+      }`,
+  });
+
+  const points = new THREE.Points(g, mat);
+  points.raycast = () => {};
+  points.frustumCulled = false;
+  points.visible = false;
+  root.add(points);
+
+  flow = {points, g, st, pos, col, alp, mat, N,
+          core:data.flow.core, byp:data.flow.bypass,
+          tDry:data.flow.core_t_dry, tAb:data.flow.core_t_ab,
+          tByp:data.flow.bypass_t,
+          x0c:data.flow.core[0][0],
+          x1c:data.flow.core[data.flow.core.length-1][0],
+          x0b:data.flow.bypass[0][0],
+          x1b:data.flow.bypass[data.flow.bypass.length-1][0],
+          rgb:[0,0,0]};
+}
+
+function updateFlow(dt){
+  if(!flow || !flow.points.visible) return;
+  const f = flow, st = f.st;
+  // Air only moves when the spools do.
+  const drive = Math.max(rpm.n1, rpm.n2);
+  const ab = rpm.ab;
+  for(let i = 0; i < f.N; i++){
+    const isCore = st.core[i] === 1;
+    // accelerates downstream, hardest through the nozzle
+    const v = (0.055 + 0.30*Math.pow(st.p[i], 1.7)) * (0.25 + 1.55*drive);
+    st.p[i] += v*dt;
+    if(st.p[i] >= 1){ st.p[i] -= 1; st.th[i] = Math.random()*Math.PI*2; }
+
+    const u = st.p[i];
+    const x = isCore ? f.x0c + (f.x1c - f.x0c)*u : f.x0b + (f.x1b - f.x0b)*u;
+    const [rin, rout] = sampleTrack(isCore ? f.core : f.byp, x);
+    const r = (rin + (rout - rin)*st.span[i]) * MM;
+
+    // swirl: the flow is turned hard through the compressor and turbine
+    const swirlZone = isCore && x > 0 && x < 2500 ? 1.0 : 0.25;
+    st.th[i] += dt * (1.6 + 5.0*drive) * swirlZone;
+    const th = st.th[i];
+
+    const j = i*3;
+    f.pos[j]   = x*MM;
+    f.pos[j+1] = Math.cos(th)*r;
+    f.pos[j+2] = Math.sin(th)*r;
+
+    let T;
+    if(isCore){
+      const a = sampleTemp(f.tDry, x), b = sampleTemp(f.tAb, x);
+      T = a + (b - a)*ab;
+    } else {
+      T = sampleTemp(f.tByp, x);
+    }
+    tempColor(T, f.rgb);
+    f.col[j] = f.rgb[0]; f.col[j+1] = f.rgb[1]; f.col[j+2] = f.rgb[2];
+    // fade in at the intake and out at the tail; bypass air fades as it mixes
+    const tail = isCore ? 1.0 : (1.0 - Math.pow(u, 3.0));
+    f.alp[i] = Math.min(1, u*14) * (1 - Math.pow(u, 8)) * tail * 0.85;
+  }
+  f.g.attributes.position.needsUpdate = true;
+  f.g.attributes.aColor.needsUpdate = true;
+  f.g.attributes.aAlpha.needsUpdate = true;
+}
+
+function setAirflow(on){
+  if(assembling) return;
+  flowOn = on;
+  $('#airflow').setAttribute('aria-pressed', String(on));
+  $('#tkey').classList.toggle('on', on);
+  if(!flow) return;
+  flow.points.visible = true;
+  animate(flow.mat.uniforms.uOpacity, {value: on ? 1 : 0, duration:500,
+    ease:'inOutQuad', onComplete: () => { if(!flowOn) flow.points.visible = false; }});
+  // the flow is inside the engine, so open the casings enough to see it
+  const r = $('#cutrange');
+  if(on && +r.value > 82){
+    animate(r, {value:52, duration:900, ease:'inOutQuad',
+                onUpdate: () => r.dispatchEvent(new Event('input'))});
+  }
+  if(on && detent === 0) setDetent(2);
+}
+
+function wireThrottle(){
+  $('#airflow').addEventListener('click', () => setAirflow(!flowOn));
+  for(const b of document.querySelectorAll('.det')){
+    b.addEventListener('click', () => setDetent(+b.dataset.d));
+  }
+  $('#rebuild').addEventListener('click', () => { if(!assembling){ setDetent(0); assemble(); } });
+}
+
+function setDetent(i){
+  detent = i;
+  const d = DETENT[i];
+  for(const b of document.querySelectorAll('.det')){
+    b.setAttribute('aria-pressed', String(+b.dataset.d === i));
+  }
+  $('#spool').classList.toggle('on', i > 0);
+  $('#railnote').textContent = i === 0
+    ? 'Click a module to hide it. Drag the engine to orbit.'
+    : `${d.name} — ${i === 3 ? 'augmentor lit' : 'dry thrust'}`;
+  // Spooling a turbine engine is slow, and the core leads the fan.
+  const slow = i > detent ? 2600 : 2000;
+  animate(rpm, {n1:d.n1, duration:slow*1.25, ease:'inOutQuad'});
+  animate(rpm, {n2:d.n2, duration:slow, ease:'inOutQuad'});
+  animate(rpm, {egt:d.egt, duration:slow*1.1, ease:'inOutQuad'});
+  animate(rpm, {ab:d.ab, duration:i === 3 ? 620 : 900,
+                ease: i === 3 ? 'outExpo' : 'inOutQuad'});
+  frameFor(i === 3);
+}
+
+// The plume is nearly as long as the engine, so make room for it.
+function frameFor(ab){
+  if(!corners.length || assembling) return;
+  utils.remove(camera.position); utils.remove(controls.target);
+  const tx = ab ? 1.35 : 0;
+  const dir = camera.position.clone().sub(controls.target).normalize();
+  const dist = fitDistance(viewDir) * (ab ? 1.62 : 1.0);
+  const p = dir.multiplyScalar(dist).add(new THREE.Vector3(tx, 0, 0));
+  animate(controls.target, {x:tx, duration:1150, ease:'inOutQuad'});
+  animate(camera.position, {x:p.x, y:p.y, z:p.z, duration:1150, ease:'inOutQuad'});
+}
+
+function resetView(){
+  controls.target.set(0,0,0);
+  camera.position.copy(viewDir).multiplyScalar(-fitDistance(viewDir));
+  camera.lookAt(0,0,0);
+  controls.update();
+}
+
+// Smallest distance along `dir` that keeps every box corner inside the frustum.
+function fitDistance(dir, margin = 1.07){
+  const up = new THREE.Vector3(0,1,0);
+  const right = new THREE.Vector3().crossVectors(dir, up).normalize();
+  const camUp = new THREE.Vector3().crossVectors(right, dir).normalize();
+  const tv = Math.tan(THREE.MathUtils.degToRad(camera.fov)/2);
+  const th = tv * camera.aspect;
+  let d = 0;
+  for(const c of corners){
+    const depth = c.dot(dir);
+    d = Math.max(d, Math.abs(c.dot(right))/th - depth,
+                    Math.abs(c.dot(camUp))/tv - depth);
+  }
+  return d * margin;
+}
+
+function onResize(){
+  const s = $('#stage');
+  camera.aspect = s.clientWidth/s.clientHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(s.clientWidth, s.clientHeight);
+}
+
+let fitTimer;
+addEventListener('resize', () => {
+  clearTimeout(fitTimer);
+  fitTimer = setTimeout(() => { if(corners.length) resetView(); }, 220);
+});
+
+let readoutAcc = 0;
+function tick(){
+  const dt = Math.min(clock.getDelta(), 0.05);
+  controls.update();
+
+  if(lpSpool){
+    lpSpool.rotation.x += rpm.n1 * 15.0 * dt;      // fan, the slower spool
+    hpSpool.rotation.x -= rpm.n2 * 24.0 * dt;      // core, faster and opposed
+  }
+  if(plumeMat){
+    for(const m of plumeMat){
+      m.uniforms.uTime.value += dt;
+      m.uniforms.uAb.value = rpm.ab;
+    }
+    plume.visible = rpm.ab > 0.004;
+    plumeLight.intensity = rpm.ab * 30;
+  }
+  updateFlow(dt);
+  const heat = Math.max(0, (rpm.egt - 380) / 820);
+  for(const m of hotMats){
+    const b = m.userData.baseEmissive;
+    if(m.emissive && b){
+      m.emissive.setRGB(b.r + heat*0.62, b.g + heat*0.17, b.b + heat*0.035);
+    }
+  }
+
+  readoutAcc += dt;
+  if(readoutAcc > 0.08){
+    readoutAcc = 0;
+    $('#n1').textContent = (rpm.n1*100).toFixed(1);
+    $('#n2').textContent = (rpm.n2*100).toFixed(1);
+    $('#egt').textContent = rpm.egt < 1 ? '—' : Math.round(rpm.egt);
+  }
+  renderer.render(scene, camera);
+}
+
+/* ---- picking ---------------------------------------------------------- */
+const ndc = new THREE.Vector2();
+function onMove(e){
+  const r = renderer.domElement.getBoundingClientRect();
+  ndc.x = ((e.clientX-r.left)/r.width)*2 - 1;
+  ndc.y = -((e.clientY-r.top)/r.height)*2 + 1;
+  raycaster.setFromCamera(ndc, camera);
+  if(assembling) return setProbe(null);
+  const hit = raycaster.intersectObjects(pickable.filter(o => o.visible), false)[0];
+  setProbe(hit ? hit.object : null);
+}
+
+function setProbe(mesh){
+  if(mesh === hovered) return;
+  if(hovered && hovered.material.emissive){
+    const b = hovered.material.userData.baseEmissive;
+    if(b) hovered.material.emissive.copy(b);
+  }
+  hovered = mesh;
+  const box = $('#probe');
+  if(!mesh){ box.classList.remove('on'); return; }
+
+  const info = meshInfo.get(mesh);
+  const mod = data.modules.find(m => m.key === info.m);
+  if(mesh.material.emissive){
+    const b = mesh.material.userData.baseEmissive;
+    mesh.material.emissive.setRGB((b?.r ?? 0) + 0.06, (b?.g ?? 0) + 0.16, (b?.b ?? 0) + 0.20);
+  }
+  $('#p-name').textContent = prettify(mesh.name);
+  $('#p-mod').textContent = mod ? mod.label : info.m;
+  $('#p-sta').textContent = `${Math.round(info.x0)} – ${Math.round(info.x1)} mm`;
+  $('#p-mat').textContent = info.mat.replace(/_/g,' ');
+  const hasCount = info.n != null && info.n !== '';
+  $('#p-cl').style.display = hasCount ? '' : 'none';
+  $('#p-cnt').style.display = hasCount ? '' : 'none';
+  if(hasCount) $('#p-cnt').textContent = `${info.n} off`;
+  box.style.setProperty('--probe-accent', mod ? mod.color : '#7C99A5');
+  box.classList.add('on');
+}
+
+function prettify(n){
+  return n.replace(/^blades_/,'').replace(/^vanes_/,'').replace(/_/g,' ')
+          .replace(/\bhpc\b/g,'HPC').replace(/\bhpt\b/g,'HPT')
+          .replace(/\blpt\b/g,'LPT').replace(/\bigv\b/g,'IGV')
+          .replace(/\bogv\b/g,'OGV').replace(/\blp\b/g,'LP').replace(/\bhp\b/g,'HP')
+          .replace(/\bbrg\b/g,'bearing')
+          .replace(/^./, c => c.toUpperCase());
+}
+
+/* ---- station rail ----------------------------------------------------- */
+function buildRail(){
+  const x0 = data.x_front, x1 = data.x_rear, span = x1 - x0;
+  const pos = x => ((x - x0)/span)*100;
+
+  const bands = $('#bands');
+  for(const [key, sa, sb] of BANDS){
+    const mod = data.modules.find(m => m.key === key);
+    if(!mod) continue;
+    const a = data.stations[sa], b = data.stations[sb];
+    const el = document.createElement('button');
+    el.className = 'band';
+    el.type = 'button';
+    el.style.left = pos(a)+'%';
+    el.style.width = (pos(b)-pos(a))+'%';
+    el.style.setProperty('--c', mod.color);
+    el.setAttribute('aria-pressed','true');
+    el.dataset.key = key;
+    el.innerHTML = `<span>${mod.label}</span><span class="ct">${mod.parts}</span>`;
+    el.title = `${mod.label} · station ${a} to ${b} mm · ${mod.parts} parts`;
+    el.addEventListener('click', () => toggle(key, el));
+    bands.appendChild(el);
+  }
+
+  const scale = $('#scale');
+  for(let x = -500; x <= 4500; x += 250){
+    if(x < x0 || x > x1) continue;
+    const major = x % 1000 === 0;
+    const t = document.createElement('div');
+    t.className = 'tick' + (major ? ' major' : '');
+    t.style.left = pos(x)+'%';
+    scale.appendChild(t);
+    if(major){
+      const n = document.createElement('div');
+      n.className = 'tnum';
+      n.style.left = pos(x)+'%';
+      n.textContent = x;
+      scale.appendChild(n);
+    }
+  }
+
+  const chips = $('#chips');
+  for(const mod of data.modules.filter(m => m.kind === 'struct')){
+    const el = document.createElement('button');
+    el.className = 'chip';
+    el.type = 'button';
+    el.style.setProperty('--c', mod.color);
+    el.setAttribute('aria-pressed','true');
+    el.dataset.key = mod.key;
+    el.innerHTML = `<span class="sw"></span>${mod.label}`;
+    el.addEventListener('click', () => toggle(mod.key, el));
+    chips.appendChild(el);
+  }
+
+  const range = $('#cutrange'), out = $('#cutval');
+  range.addEventListener('input', () => {
+    // 100 = intact; 0 = shell fully peeled back past the axis.
+    const f = range.value/100;
+    plane.constant = -0.06 + f*0.76;
+    out.textContent = range.value === '100' ? 'off' : `${Math.round((1-f)*100)}%`;
+  });
+  $('#reset').addEventListener('click', () => {
+    resetView();
+    range.value = 100; range.dispatchEvent(new Event('input'));
+    for(const el of document.querySelectorAll('.band,.chip')){
+      el.setAttribute('aria-pressed','true');
+    }
+    hidden.clear();
+    for(const list of byModule.values()) list.forEach(o => o.visible = true);
+  });
+}
+
+function toggle(key, el){
+  const on = hidden.has(key);
+  on ? hidden.delete(key) : hidden.add(key);
+  el.setAttribute('aria-pressed', String(on));
+  (byModule.get(key) || []).forEach(o => o.visible = on);
+  if(hovered && !hovered.visible) setProbe(null);
+}
+</script>
+</body>
+</html>
