@@ -351,7 +351,7 @@ let scene, camera, renderer, controls, root, raycaster, plane;
 let data, byModule = new Map(), meshInfo = new Map(), pickable = [];
 let hidden = new Set(), hovered = null, corners = [], viewDir = null;
 let lpSpool, hpSpool, plume, plumeMat, plumeLight, hotMats = [];
-let detent = 0, assembling = false;
+let detent = 0, assembling = false, assembleTimer = null;
 let flow = null, flowOn = false;
 const rpm = {n1:0, n2:0, ab:0, egt:0};   // animated by the throttle
 const clock = new THREE.Clock();
@@ -695,7 +695,8 @@ function partOffset(mode, ry, rz){
 }
 
 function assemble(){
-  if(assembling) return;
+  // a replay finishes whatever is still in flight rather than refusing
+  finishAssembly();
   assembling = true;
   utils.remove(camera.position); utils.remove(controls.target);
 
@@ -745,10 +746,30 @@ function assemble(){
   animate(camera.position, {x:p.x, y:p.y, z:p.z,
                             duration:BUILD_MS, ease:'inOutQuad'});
 
-  setTimeout(() => {
-    for(const m of pickable){ m.material.transparent = false; m.material.opacity = 1; }
-    assembling = false;
-  }, BUILD_MS + 400);
+  assembleTimer = setTimeout(finishAssembly, BUILD_MS + 400);
+}
+
+/* Snap the build to its finished state.
+ *
+ * The build animation runs for nine seconds and every control was gated on
+ * `assembling`, so pressing Airflow -- or a throttle detent -- during it did
+ * nothing at all and said nothing about why. Waiting is not the interesting
+ * part of a jet engine. Any control now finishes the build first and then
+ * does what it was asked.
+ */
+function finishAssembly(){
+  if(!assembling) return;
+  clearTimeout(assembleTimer);
+  utils.remove(camera.position);
+  for(const m of pickable){
+    utils.remove(m.position); utils.remove(m.rotation); utils.remove(m.material);
+    m.position.set(0, 0, 0);
+    m.rotation.x = 0;
+    m.material.transparent = false;
+    m.material.opacity = 1;
+  }
+  for(const el of document.querySelectorAll('.band, .chip')) el.style.opacity = '1';
+  assembling = false;
 }
 
 // ---- airflow -----------------------------------------------------------
@@ -913,7 +934,7 @@ function updateFlow(dt){
 }
 
 function setAirflow(on){
-  if(assembling) return;
+  finishAssembly();
   flowOn = on;
   $('#airflow').setAttribute('aria-pressed', String(on));
   $('#tkey').classList.toggle('on', on);
@@ -935,10 +956,11 @@ function wireThrottle(){
   for(const b of document.querySelectorAll('.det')){
     b.addEventListener('click', () => setDetent(+b.dataset.d));
   }
-  $('#rebuild').addEventListener('click', () => { if(!assembling){ setDetent(0); assemble(); } });
+  $('#rebuild').addEventListener('click', () => { setDetent(0); assemble(); });
 }
 
 function setDetent(i){
+  finishAssembly();
   detent = i;
   const d = DETENT[i];
   for(const b of document.querySelectorAll('.det')){
