@@ -11,7 +11,7 @@
 <style>
   :root{
     /* Viewport reads as a test cell; the rail reads as a machined bezel. */
-    --void:#171F23;
+    --void:#232C32;
     --void-lift:#141C1F;
     --panel:#C7CCC4;
     --panel-dim:#B3B9AF;
@@ -282,7 +282,7 @@
     <div id="chips"></div>
     <div id="cut">
       <label for="cutrange">Cutaway</label>
-      <input id="cutrange" type="range" min="0" max="100" value="100" step="1">
+      <input id="cutrange" type="range" min="0" max="100" value="100" step="1" autocomplete="off">
       <output id="cutval">off</output>
     </div>
     <button id="reset" type="button">Reset view</button>
@@ -365,26 +365,26 @@ async function init(){
   renderer.setSize(stage.clientWidth, stage.clientHeight);
   renderer.localClippingEnabled = true;
   renderer.toneMapping = THREE.LinearToneMapping;
-  renderer.toneMappingExposure = 0.88;
+  renderer.toneMappingExposure = 1.30;
   stage.appendChild(renderer.domElement);
 
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x171F23);
+  scene.background = new THREE.Color(0x232C32);
 
   const pmrem = new THREE.PMREMGenerator(renderer);
   scene.environment = pmrem.fromEquirectangular(studioEnv()).texture;
 
   camera = new THREE.PerspectiveCamera(26, stage.clientWidth/stage.clientHeight, 0.05, 120);
 
-  scene.environmentIntensity = 0.88;
+  scene.environmentIntensity = 1.05;
   const key = new THREE.DirectionalLight(0xfff2e4, 1.15); key.position.set(-3,5,6);
   const fill = new THREE.DirectionalLight(0xc3d6e0, 1.05); fill.position.set(4,-3.5,-3);
   const rim  = new THREE.DirectionalLight(0xffffff, 0.85); rim.position.set(5,2.4,-6);
   // Hemispheric ambient guarantees every surface normal receives some light,
   // so no face can fall to pure black regardless of how the exporter left its
   // normals. With metalness low these carry real diffuse weight.
-  const hemi = new THREE.HemisphereLight(0xDCE6EA, 0x8A9298, 0.85);
-  const amb  = new THREE.AmbientLight(0xB8C2C7, 0.26);
+  const hemi = new THREE.HemisphereLight(0xE2EBEF, 0x9AA2A8, 1.70);
+  const amb  = new THREE.AmbientLight(0xC2CCD2, 0.55);
   scene.add(key, fill, rim, hemi, amb);
 
   controls = new OrbitControls(camera, renderer.domElement);
@@ -394,7 +394,7 @@ async function init(){
   controls.maxDistance = 26;
 
   raycaster = new THREE.Raycaster();
-  plane = new THREE.Plane(new THREE.Vector3(0,0,-1), 10);
+  plane = new THREE.Plane(new THREE.Vector3(0,0,-1), 1e4);  // wide open
 
   try{
     data = await (await fetch('parts.json')).json();
@@ -512,10 +512,14 @@ function ready(model){
     // lights leave black -- which some of the exported shells stubbornly are.
     // This is what keeps the hull readable instead of clipping to black.
     const c = o.material.color;
-    o.material.emissive.setRGB(c.r * 0.22, c.g * 0.22, c.b * 0.23);
+    o.material.emissive.setRGB(c.r * 0.30, c.g * 0.30, c.b * 0.32);
     o.material.userData.baseEmissive = o.material.emissive.clone();
     if(isShell(o.name)) o.material.clippingPlanes = [plane];
-    o.material.side = THREE.FrontSide;
+    // Booleans and the exporter leave some faces wound the other way. With
+    // FrontSide those are culled and you see straight into the dark interior,
+    // which is what produced the black bands along the hull. DoubleSide draws
+    // them with the normal flipped instead.
+    o.material.side = THREE.DoubleSide;
     meshInfo.set(o, info);
     pickable.push(o);
     if(!byModule.has(info.m)) byModule.set(info.m, []);
@@ -1118,12 +1122,19 @@ function buildRail(){
   }
 
   const range = $('#cutrange'), out = $('#cutval');
-  range.addEventListener('input', () => {
+  const applyCut = () => {
     // 100 = intact; 0 = shell fully peeled back past the axis.
     const f = range.value/100;
     plane.constant = -0.06 + f*0.76;
     out.textContent = range.value === '100' ? 'off' : `${Math.round((1-f)*100)}%`;
-  });
+  };
+  range.addEventListener('input', applyCut);
+  // Force a known state. A restored slider value does NOT fire input, so the
+  // plane would keep whatever constant it was constructed with while the UI
+  // claimed the cutaway was off -- the engine then rendered permanently
+  // part-sectioned, with the airflow showing through the missing casing.
+  range.value = 100;
+  applyCut();
   $('#reset').addEventListener('click', () => {
     resetView();
     range.value = 100; range.dispatchEvent(new Event('input'));
