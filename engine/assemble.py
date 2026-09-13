@@ -137,6 +137,23 @@ def array_rotational(obj, count):
     bpy.data.meshes.remove(old)
 
 
+def recalc_normals(obj):
+    """Make normals point outward, resolved by Blender from the winding.
+
+    Without this the revolved casings arrive with normals that shade most of
+    the hull black -- the geometry is complete (an unlit material renders a
+    full silhouette), but the shading normals are wrong. The sibling aircraft
+    and car projects both do this and neither shows the artefact.
+    """
+    bpy.context.view_layer.objects.active = obj
+    obj.select_set(True)
+    bpy.ops.object.mode_set(mode="EDIT")
+    bpy.ops.mesh.select_all(action="SELECT")
+    bpy.ops.mesh.normals_make_consistent(inside=False)
+    bpy.ops.object.mode_set(mode="OBJECT")
+    obj.select_set(False)
+
+
 def shade_smooth(obj, angle_deg=32.0):
     """Smooth around the revolution, sharp across profile corners.
 
@@ -208,6 +225,7 @@ def main():
             if name in arrays:
                 array_rotational(obj, arrays[name])
 
+            recalc_normals(obj)
             mat_name = material_for(name)
             obj.data.materials.append(mats[mat_name])
             n_sharp += shade_smooth(obj)

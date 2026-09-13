@@ -365,26 +365,26 @@ async function init(){
   renderer.setSize(stage.clientWidth, stage.clientHeight);
   renderer.localClippingEnabled = true;
   renderer.toneMapping = THREE.LinearToneMapping;
-  renderer.toneMappingExposure = 1.30;
+  renderer.toneMappingExposure = 0.62;
   stage.appendChild(renderer.domElement);
 
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x232C32);
+  scene.background = new THREE.Color(0x1E262B);
 
   const pmrem = new THREE.PMREMGenerator(renderer);
   scene.environment = pmrem.fromEquirectangular(studioEnv()).texture;
 
   camera = new THREE.PerspectiveCamera(26, stage.clientWidth/stage.clientHeight, 0.05, 120);
 
-  scene.environmentIntensity = 1.05;
+  scene.environmentIntensity = 1.55;
   const key = new THREE.DirectionalLight(0xfff2e4, 1.15); key.position.set(-3,5,6);
   const fill = new THREE.DirectionalLight(0xc3d6e0, 1.05); fill.position.set(4,-3.5,-3);
   const rim  = new THREE.DirectionalLight(0xffffff, 0.85); rim.position.set(5,2.4,-6);
   // Hemispheric ambient guarantees every surface normal receives some light,
   // so no face can fall to pure black regardless of how the exporter left its
   // normals. With metalness low these carry real diffuse weight.
-  const hemi = new THREE.HemisphereLight(0xE2EBEF, 0x9AA2A8, 1.70);
-  const amb  = new THREE.AmbientLight(0xC2CCD2, 0.55);
+  const hemi = new THREE.HemisphereLight(0xE8F0F4, 0xA6AEB4, 0.45);
+  const amb  = new THREE.AmbientLight(0xC2CCD2, 0.12);
   scene.add(key, fill, rim, hemi, amb);
 
   controls = new OrbitControls(camera, renderer.domElement);
@@ -408,7 +408,7 @@ async function init(){
     'https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/libs/draco/gltf/');
   const loader = new GLTFLoader().setDRACOLoader(draco);
 
-  loader.load('../build/f110_web.glb',
+  loader.load('../build/f110_web.glb?v=' + (window.__MODEL_VER || '2'),
     gltf => ready(gltf.scene),
     ev => {
       if(!ev.total) return;
@@ -424,33 +424,41 @@ async function init(){
 // underside of a metallic=1 surface to pure black; this keeps a lit ground and
 // puts one soft highlight where the key light should be.
 function studioEnv(){
+  // A large metal cylinder only looks like metal if there is something bright
+  // for it to reflect in every direction. A dim gradient gives one hot streak
+  // and darkness everywhere else -- which is exactly what photographing chrome
+  // in an unlit room looks like. This is a lightbox: bright and low-contrast
+  // all round, with soft panels rather than points.
   const w = 1024, h = 512;
   const cv = document.createElement('canvas');
   cv.width = w; cv.height = h;
   const g = cv.getContext('2d');
 
   const grad = g.createLinearGradient(0, 0, 0, h);
-  grad.addColorStop(0.00, '#D6DDE0');
-  grad.addColorStop(0.36, '#BFC7CB');
-  grad.addColorStop(0.52, '#AAB2B7');
-  grad.addColorStop(0.72, '#9AA2A7');
-  grad.addColorStop(1.00, '#939A9F');
+  grad.addColorStop(0.00, '#FFFFFF');
+  grad.addColorStop(0.34, '#EDF1F3');
+  grad.addColorStop(0.52, '#DCE2E6');
+  grad.addColorStop(0.74, '#C8CFD4');
+  grad.addColorStop(1.00, '#B8C0C6');
   g.fillStyle = grad;
   g.fillRect(0, 0, w, h);
 
-  // key: a soft bright panel high and to one side
-  const key = g.createRadialGradient(w*0.28, h*0.22, 0, w*0.28, h*0.22, w*0.20);
-  key.addColorStop(0, 'rgba(255,250,242,0.30)');
-  key.addColorStop(1, 'rgba(255,252,246,0)');
-  g.fillStyle = key;
-  g.fillRect(0, 0, w, h);
-
-  // cool rim from behind, so edges separate from the dark viewport
-  const rim = g.createRadialGradient(w*0.78, h*0.34, 0, w*0.78, h*0.34, w*0.15);
-  rim.addColorStop(0, 'rgba(196,218,230,0.26)');
-  rim.addColorStop(1, 'rgba(196,218,230,0)');
-  g.fillStyle = rim;
-  g.fillRect(0, 0, w, h);
+  // four soft overhead panels, so the hull picks up separated highlights as
+  // it turns instead of one continuous smear
+  for(const cx of [0.14, 0.38, 0.62, 0.86]){
+    const p = g.createLinearGradient(0, h * 0.02, 0, h * 0.42);
+    p.addColorStop(0, 'rgba(255,255,255,0.95)');
+    p.addColorStop(1, 'rgba(255,255,255,0)');
+    g.fillStyle = p;
+    g.fillRect(w * (cx - 0.075), h * 0.02, w * 0.15, h * 0.40);
+  }
+  // a horizon band, which is what gives a cylinder its long side highlight
+  const hz = g.createLinearGradient(0, h * 0.44, 0, h * 0.60);
+  hz.addColorStop(0, 'rgba(255,255,255,0)');
+  hz.addColorStop(0.5, 'rgba(255,255,255,0.42)');
+  hz.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = hz;
+  g.fillRect(0, h * 0.44, w, h * 0.16);
 
   const tex = new THREE.CanvasTexture(cv);
   tex.mapping = THREE.EquirectangularReflectionMapping;
@@ -471,6 +479,51 @@ function fillSpec(){
   $('#s-parts').textContent = Object.keys(data.parts).length;
 }
 
+// Three soft light directions plus a sky/ground term, evaluated per vertex.
+const BAKE_LIGHTS = [
+  {d: [-0.42, 0.76, 0.50], i: 1.05, c: [1.00, 0.97, 0.92]},
+  {d: [ 0.62,-0.34,-0.71], i: 0.40, c: [0.78, 0.86, 0.96]},
+  {d: [ 0.48, 0.40,-0.78], i: 0.30, c: [1.00, 1.00, 1.00]},
+];
+
+function bakeShading(mesh, rgb, matName){
+  // toNonIndexed returns a NEW geometry, so it must be assigned back or the
+  // mesh keeps the old one and the colour attribute goes nowhere.
+  const g = mesh.geometry.index ? mesh.geometry.toNonIndexed() : mesh.geometry;
+  mesh.geometry = g;
+  if(!g.attributes.normal) g.computeVertexNormals();
+  const nrm = g.attributes.normal;
+  const count = nrm.count;
+  const col = new Float32Array(count * 3);
+  const gloss = /steel|titanium|casing|alloy/.test(matName) ? 0.30 : 0.16;
+
+  for(let i = 0; i < count; i++){
+    let nx = nrm.getX(i), ny = nrm.getY(i), nz = nrm.getZ(i);
+    const len = Math.hypot(nx, ny, nz) || 1;
+    nx /= len; ny /= len; nz /= len;
+
+    // hemisphere term: sky above, bounce below, never zero
+    const up = (ny + 1) * 0.5;
+    let r = 0.15 + 0.21 * up, gg = 0.155 + 0.22 * up, b = 0.17 + 0.23 * up;
+
+    for(const L of BAKE_LIGHTS){
+      const nl = Math.max(0, nx*L.d[0] + ny*L.d[1] + nz*L.d[2]);
+      const w = L.i * (0.16 + 0.84 * nl);          // wrapped, so no hard terminator
+      r += w * L.c[0]; gg += w * L.c[1]; b += w * L.c[2];
+      const spec = Math.pow(nl, 22) * gloss;
+      r += spec; gg += spec; b += spec;
+    }
+    const j = i * 3;
+    col[j]     = Math.min(1, rgb[0] * r * 1.78 + 0.030);
+    col[j + 1] = Math.min(1, rgb[1] * gg * 1.78 + 0.030);
+    col[j + 2] = Math.min(1, rgb[2] * b  * 1.78 + 0.034);
+  }
+  g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  return new THREE.MeshBasicMaterial({
+    vertexColors: true, side: THREE.DoubleSide,
+  });
+}
+
 function ready(model){
   root = model;
 
@@ -479,47 +532,18 @@ function ready(model){
     const info = data.parts[o.name];
     if(!info) return;
     // Clone so clipping and highlight can be set per part rather than per material.
-    // Revolved shells arrive with normals averaged across their profile
-    // corners, which leaves large faces shading to black no matter what the
-    // material or lights do. Flat face normals are derived from winding, so
-    // they are correct by construction -- and machined hardware reads fine
-    // flat-shaded at 96 segments around. Airfoils keep their smooth normals.
-    if(!/^(blades_|vanes_|spinner)/.test(o.name)){
-      o.geometry = o.geometry.toNonIndexed();
-      o.geometry.computeVertexNormals();
-    }
-    o.material = o.material.clone();
-    // glTF cannot carry the node-driven colour and roughness used for the
-    // Blender renders, so every material arrives at roughness 1.0. Material
-    // names do survive, so reapply the alloy table from spec.py by name.
-    const alloy = data.palette[info.mat];
-    if(alloy){
-      // A near-mirror only ever shows sky or void, leaving no mid-tone to read
-      // form against. Dropping metalness lets diffuse shading carry the
-      // surface. The alloy hues are kept but lifted, since these values were
-      // tuned as reflectance rather than albedo.
-      const k = alloy.metal > 0.5 ? 1.42 : 1.0;
-      o.material.color.setRGB(
-        Math.min(alloy.rgb[0] * k, 0.92),
-        Math.min(alloy.rgb[1] * k, 0.92),
-        Math.min(alloy.rgb[2] * k, 0.92),
-        THREE.LinearSRGBColorSpace);
-      o.material.metalness = alloy.metal * 0.28;
-      o.material.roughness = THREE.MathUtils.clamp(alloy.rough + 0.22, 0.45, 0.85);
-    }
-    // Guaranteed tonal floor. Emissive is added independently of lights and
-    // of the surface normal, so it lifts faces that the environment and the
-    // lights leave black -- which some of the exported shells stubbornly are.
-    // This is what keeps the hull readable instead of clipping to black.
-    const c = o.material.color;
-    o.material.emissive.setRGB(c.r * 0.30, c.g * 0.30, c.b * 0.32);
-    o.material.userData.baseEmissive = o.material.emissive.clone();
+    // Baked shading.
+    //
+    // three.js renders these casings with the top and bottom thirds pure black
+    // no matter what the material, normals, environment or lights are -- an
+    // unlit material proves the geometry is complete and the normals measure
+    // valid, so the cause is somewhere I could not reach. Rather than ship a
+    // model with black bands, the shading is computed here from the geometry's
+    // own normals and written into vertex colours, with a floor that makes
+    // pure black impossible. Unlit rendering then just displays it.
+    const alloy = data.palette[info.mat] || {rgb: [0.4, 0.42, 0.44]};
+    o.material = bakeShading(o, alloy.rgb, info.mat);
     if(isShell(o.name)) o.material.clippingPlanes = [plane];
-    // Booleans and the exporter leave some faces wound the other way. With
-    // FrontSide those are culled and you see straight into the dark interior,
-    // which is what produced the black bands along the hull. DoubleSide draws
-    // them with the normal flipped instead.
-    o.material.side = THREE.DoubleSide;
     meshInfo.set(o, info);
     pickable.push(o);
     if(!byModule.has(info.m)) byModule.set(info.m, []);
@@ -1002,10 +1026,7 @@ function tick(){
   updateFlow(dt);
   const heat = Math.max(0, (rpm.egt - 380) / 820);
   for(const m of hotMats){
-    const b = m.userData.baseEmissive;
-    if(m.emissive && b){
-      m.emissive.setRGB(b.r + heat*0.62, b.g + heat*0.17, b.b + heat*0.035);
-    }
+    m.color.setRGB(1 + heat*0.55, 1 - heat*0.30, 1 - heat*0.62);
   }
 
   readoutAcc += dt;
@@ -1032,20 +1053,14 @@ function onMove(e){
 
 function setProbe(mesh){
   if(mesh === hovered) return;
-  if(hovered && hovered.material.emissive){
-    const b = hovered.material.userData.baseEmissive;
-    if(b) hovered.material.emissive.copy(b);
-  }
+  if(hovered) hovered.material.color.setRGB(1, 1, 1);
   hovered = mesh;
   const box = $('#probe');
   if(!mesh){ box.classList.remove('on'); return; }
 
   const info = meshInfo.get(mesh);
   const mod = data.modules.find(m => m.key === info.m);
-  if(mesh.material.emissive){
-    const b = mesh.material.userData.baseEmissive;
-    mesh.material.emissive.setRGB((b?.r ?? 0) + 0.06, (b?.g ?? 0) + 0.16, (b?.b ?? 0) + 0.20);
-  }
+  mesh.material.color.setRGB(0.62, 0.86, 1.0);
   $('#p-name').textContent = prettify(mesh.name);
   $('#p-mod').textContent = mod ? mod.label : info.m;
   $('#p-sta').textContent = `${Math.round(info.x0)} – ${Math.round(info.x1)} mm`;
