@@ -334,12 +334,17 @@ const SHELL = ['casing_','flange_','inlet_case','inlet_lip','bypass_inner_wall',
   'turbine_blade_outer_air_seals','splitter','mixer'];
 const isShell = n => SHELL.some(p => n.includes(p));
 
-// The two concentric spools. The LP spool carries the fan and the low turbine;
-// the HP spool carries the compressor and the high turbine, and runs faster.
-const IS_LP = n => /^(spinner|fan_disc_assembly|fan_interstage_seals|shaft_lp|lpt_disc_assembly)$/.test(n)
-                || /^blades_(fan|lpt)_r\d$/.test(n);
-const IS_HP = n => /^(hpc_drum|hpc_front_cone|hpc_rear_cone|hpc_interstage_seals|shaft_hp|hpt_disc)$/.test(n)
-                || /^blades_(hpc|hpt)_r\d$/.test(n);
+/* Which spool a part turns with, from the manifest.
+ *
+ * This was two regular expressions listing rotor names by hand, in the middle
+ * of this file. Adding a rotor to the engine, or renaming one, stopped it
+ * turning with no error and no test -- and the other three models in this
+ * family all export the axis and role of every moving part, so this one was
+ * the odd one out for no reason. `spool_for` in assemble.py owns it now and
+ * verify.py checks every rotor got one.
+ */
+const IS_LP = n => (data.parts[n] || {}).spool === 'lp';
+const IS_HP = n => (data.parts[n] || {}).spool === 'hp';
 
 // Throttle detents: fan speed, core speed, augmentor, turbine gas temperature.
 const DETENT = [
@@ -361,6 +366,7 @@ const BANDS = [
 ];
 
 let scene, camera, renderer, controls, root, raycaster, plane;
+let keyLight = null;   // needed in ready() to size the shadow camera to the model
 let data, byModule = new Map(), meshInfo = new Map(), pickable = [];
 let hidden = new Set(), hovered = null, corners = [], viewDir = null;
 let lpSpool, hpSpool, plume, plumeMat, plumeLight, hotMats = [];
@@ -377,8 +383,13 @@ async function init(){
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   renderer.setSize(stage.clientWidth, stage.clientHeight);
   renderer.localClippingEnabled = true;
-  renderer.toneMapping = THREE.LinearToneMapping;
-  renderer.toneMappingExposure = 0.62;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.12;
+  // Self-shadowing is what stops a model reading as a lit diagram. Without it
+  // the gearbox hanging under the fan case is exactly as bright as the case,
+  // and every recess between two flanges is exactly as bright as the flange.
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   stage.appendChild(renderer.domElement);
 
   scene = new THREE.Scene();
@@ -389,16 +400,28 @@ async function init(){
 
   camera = new THREE.PerspectiveCamera(26, stage.clientWidth/stage.clientHeight, 0.05, 120);
 
-  scene.environmentIntensity = 1.55;
-  const key = new THREE.DirectionalLight(0xfff2e4, 1.15); key.position.set(-3,5,6);
-  const fill = new THREE.DirectionalLight(0xc3d6e0, 1.05); fill.position.set(4,-3.5,-3);
-  const rim  = new THREE.DirectionalLight(0xffffff, 0.85); rim.position.set(5,2.4,-6);
-  // Hemispheric ambient guarantees every surface normal receives some light,
-  // so no face can fall to pure black regardless of how the exporter left its
-  // normals. With metalness low these carry real diffuse weight.
-  const hemi = new THREE.HemisphereLight(0xE8F0F4, 0xA6AEB4, 0.45);
-  const amb  = new THREE.AmbientLight(0xC2CCD2, 0.12);
-  scene.add(key, fill, rim, hemi, amb);
+  /* Light rig.
+   *
+   * Every one of these numbers was set to fight the black-band bug: a huge
+   * environment boost, three directional lights and a hemisphere term on top,
+   * so that no normal anywhere could fall dark. With the bug fixed that rig is
+   * actively wrong -- on a metalness-1 surface the directional lights
+   * contribute specular only, and the environment does all the real work, so
+   * piling on fill light just washes the engine out. Measured: the casings
+   * came out at rgb(171,175,178) against an albedo of 0.216/0.226/0.244.
+   *
+   * One key for crisp highlights, a cool rim to separate the silhouette from
+   * the background, and the environment at unity. */
+  scene.environmentIntensity = 1.0;
+  const key = new THREE.DirectionalLight(0xfff4e8, 0.85); key.position.set(-3,5,6);
+  keyLight = key;
+  key.castShadow = true;
+  key.shadow.mapSize.set(2048, 2048);
+  key.shadow.bias = -0.0006;
+  key.shadow.normalBias = 0.012;
+  const rim  = new THREE.DirectionalLight(0xbcd4e4, 0.55); rim.position.set(5,2.0,-6);
+  const amb  = new THREE.AmbientLight(0x9FB0BC, 0.05);
+  scene.add(key, rim, amb);
 
   controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
@@ -429,7 +452,22 @@ async function init(){
       $('#bar i').style.width = pct + '%';
       $('#loadtxt').textContent = `Loading engine… ${pct}%`;
     },
-    () => fail('Could not load <code>build/f110_web.glb</code>. Run <code>make web</code> to generate it.')
+    (e) => {
+      /* Say what actually went wrong.
+       *
+       * GLTFLoader routes an exception thrown inside its own onLoad callback
+       * to onError as well, so a runtime bug anywhere in ready() used to be
+       * reported as a missing file -- "Could not load ... run make web" while the
+       * file sat there being served with a 200. Two different faults, one
+       * message, and the message named the wrong one. */
+      const msg = e && (e.message || e.type) ? String(e.message || e.type) : 'unknown error';
+      const missing = /404|not found|fetch|network/i.test(msg);
+      fail(missing
+        ? 'Could not load <code>build/f110_web.glb</code>. Run <code>make web</code> to generate it.'
+        : 'The model loaded but the viewer failed to start: <code>' +
+          msg.replace(/[<>&]/g, '') + '</code>');
+      console.error(e);
+    }
   );
 }
 
@@ -437,41 +475,48 @@ async function init(){
 // underside of a metallic=1 surface to pure black; this keeps a lit ground and
 // puts one soft highlight where the key light should be.
 function studioEnv(){
-  // A large metal cylinder only looks like metal if there is something bright
-  // for it to reflect in every direction. A dim gradient gives one hot streak
-  // and darkness everywhere else -- which is exactly what photographing chrome
-  // in an unlit room looks like. This is a lightbox: bright and low-contrast
-  // all round, with soft panels rather than points.
+  /* A test-cell lightbox, with a floor.
+   *
+   * The previous version was deliberately "bright and low-contrast all round"
+   * because a dim environment made the black-band bug look worse. That is the
+   * wrong trade once the bug is gone: a metal surface is nothing but a picture
+   * of its surroundings, so an environment with no dark in it produces a
+   * casing with no dark in it, whatever its albedo. What makes machined metal
+   * read as metal is the boundary between the bright panels above and the dark
+   * floor below sweeping across it as it turns.
+   */
   const w = 1024, h = 512;
   const cv = document.createElement('canvas');
   cv.width = w; cv.height = h;
   const g = cv.getContext('2d');
 
   const grad = g.createLinearGradient(0, 0, 0, h);
-  grad.addColorStop(0.00, '#FFFFFF');
-  grad.addColorStop(0.34, '#EDF1F3');
-  grad.addColorStop(0.52, '#DCE2E6');
-  grad.addColorStop(0.74, '#C8CFD4');
-  grad.addColorStop(1.00, '#B8C0C6');
+  grad.addColorStop(0.00, '#F4F8FA');   // ceiling
+  grad.addColorStop(0.30, '#D8E0E6');
+  grad.addColorStop(0.48, '#9AA5AD');   // horizon
+  grad.addColorStop(0.56, '#3A4248');   // floor line -- the dark half starts
+  grad.addColorStop(0.78, '#23292E');
+  grad.addColorStop(1.00, '#171B1F');   // directly underneath
   g.fillStyle = grad;
   g.fillRect(0, 0, w, h);
 
   // four soft overhead panels, so the hull picks up separated highlights as
   // it turns instead of one continuous smear
   for(const cx of [0.14, 0.38, 0.62, 0.86]){
-    const p = g.createLinearGradient(0, h * 0.02, 0, h * 0.42);
-    p.addColorStop(0, 'rgba(255,255,255,0.95)');
+    const p = g.createLinearGradient(0, h * 0.02, 0, h * 0.34);
+    p.addColorStop(0, 'rgba(255,255,255,1)');
     p.addColorStop(1, 'rgba(255,255,255,0)');
     g.fillStyle = p;
-    g.fillRect(w * (cx - 0.075), h * 0.02, w * 0.15, h * 0.40);
+    g.fillRect(w * (cx - 0.065), h * 0.02, w * 0.13, h * 0.32);
   }
-  // a horizon band, which is what gives a cylinder its long side highlight
-  const hz = g.createLinearGradient(0, h * 0.44, 0, h * 0.60);
+  // a bright horizon band: this is what draws the long highlight down the side
+  // of a cylinder, and it only reads because the floor beneath it is dark
+  const hz = g.createLinearGradient(0, h * 0.40, 0, h * 0.52);
   hz.addColorStop(0, 'rgba(255,255,255,0)');
-  hz.addColorStop(0.5, 'rgba(255,255,255,0.42)');
+  hz.addColorStop(0.5, 'rgba(255,255,255,0.85)');
   hz.addColorStop(1, 'rgba(255,255,255,0)');
   g.fillStyle = hz;
-  g.fillRect(0, h * 0.44, w, h * 0.16);
+  g.fillRect(0, h * 0.40, w, h * 0.12);
 
   const tex = new THREE.CanvasTexture(cv);
   tex.mapping = THREE.EquirectangularReflectionMapping;
@@ -492,48 +537,44 @@ function fillSpec(){
   $('#s-parts').textContent = Object.keys(data.parts).length;
 }
 
-// Three soft light directions plus a sky/ground term, evaluated per vertex.
-const BAKE_LIGHTS = [
-  {d: [-0.42, 0.76, 0.50], i: 1.05, c: [1.00, 0.97, 0.92]},
-  {d: [ 0.62,-0.34,-0.71], i: 0.40, c: [0.78, 0.86, 0.96]},
-  {d: [ 0.48, 0.40,-0.78], i: 0.30, c: [1.00, 1.00, 1.00]},
-];
-
-function bakeShading(mesh, rgb, matName){
-  // toNonIndexed returns a NEW geometry, so it must be assigned back or the
-  // mesh keeps the old one and the colour attribute goes nowhere.
-  const g = mesh.geometry.index ? mesh.geometry.toNonIndexed() : mesh.geometry;
-  mesh.geometry = g;
-  if(!g.attributes.normal) g.computeVertexNormals();
-  const nrm = g.attributes.normal;
-  const count = nrm.count;
-  const col = new Float32Array(count * 3);
-  const gloss = /steel|titanium|casing|alloy/.test(matName) ? 0.30 : 0.16;
-
-  for(let i = 0; i < count; i++){
-    let nx = nrm.getX(i), ny = nrm.getY(i), nz = nrm.getZ(i);
-    const len = Math.hypot(nx, ny, nz) || 1;
-    nx /= len; ny /= len; nz /= len;
-
-    // hemisphere term: sky above, bounce below, never zero
-    const up = (ny + 1) * 0.5;
-    let r = 0.15 + 0.21 * up, gg = 0.155 + 0.22 * up, b = 0.17 + 0.23 * up;
-
-    for(const L of BAKE_LIGHTS){
-      const nl = Math.max(0, nx*L.d[0] + ny*L.d[1] + nz*L.d[2]);
-      const w = L.i * (0.16 + 0.84 * nl);          // wrapped, so no hard terminator
-      r += w * L.c[0]; gg += w * L.c[1]; b += w * L.c[2];
-      const spec = Math.pow(nl, 22) * gloss;
-      r += spec; gg += spec; b += spec;
-    }
-    const j = i * 3;
-    col[j]     = Math.min(1, rgb[0] * r * 1.78 + 0.030);
-    col[j + 1] = Math.min(1, rgb[1] * gg * 1.78 + 0.030);
-    col[j + 2] = Math.min(1, rgb[2] * b  * 1.78 + 0.034);
-  }
-  g.setAttribute('color', new THREE.BufferAttribute(col, 3));
-  return new THREE.MeshBasicMaterial({
-    vertexColors: true, side: THREE.DoubleSide,
+/* Real materials, lit by the studio environment above.
+ *
+ * This used to compute a three-light lambert term per vertex, write it into a
+ * colour attribute and render the whole engine with an unlit
+ * MeshBasicMaterial. The note that replaced said that three.js drew the
+ * casings "with the top and bottom thirds pure black no matter what the
+ * material, normals, environment or lights are", and that the cause was
+ * somewhere unreachable.
+ *
+ * The cause was reachable, and it was in the exporter. materials.py links a
+ * procedural noise into the Principled BSDF's Roughness to break up large
+ * machined surfaces. glTF cannot express that, so the exporter drops
+ * roughnessFactor entirely -- and an omitted roughnessFactor does not mean
+ * "use the value in the .blend", it means 1.0. Every casing therefore arrived
+ * as metalness 1.0 with roughness 1.0: a fully rough metal has no diffuse
+ * term at all, so anywhere it fails to catch a light it is black. The top and
+ * bottom of a cylinder are exactly where it fails to catch a light.
+ *
+ * Reading metalness and roughness from the palette in parts.json rather than
+ * from the glTF material sidesteps the export bug for this viewer; export.py
+ * unlinks the noise before writing the glb so the file is correct too.
+ *
+ * The cost of the old workaround was everything that makes metal look like
+ * metal: no environment reflection, no metalness, no specular but a fake
+ * pow(n.l, 22), and a 1.78 gain that pushed the casings to rgb(204,205,207) --
+ * a three-level spread of colour on a part whose albedo is 0.216/0.226/0.244.
+ */
+function partMaterial(info){
+  const a = data.palette[info.mat] || {rgb: [0.4, 0.42, 0.44], metal: 0.8, rough: 0.5};
+  const c = new THREE.Color();
+  // palette values come out of Blender, so they are linear, not sRGB
+  c.setRGB(a.rgb[0], a.rgb[1], a.rgb[2], THREE.LinearSRGBColorSpace);
+  return new THREE.MeshStandardMaterial({
+    color: c,
+    metalness: a.metal !== undefined ? a.metal : 0.8,
+    roughness: a.rough !== undefined ? a.rough : 0.5,
+    envMapIntensity: 1.0,
+    side: THREE.DoubleSide,
   });
 }
 
@@ -545,17 +586,7 @@ function ready(model){
     const info = data.parts[o.name];
     if(!info) return;
     // Clone so clipping and highlight can be set per part rather than per material.
-    // Baked shading.
-    //
-    // three.js renders these casings with the top and bottom thirds pure black
-    // no matter what the material, normals, environment or lights are -- an
-    // unlit material proves the geometry is complete and the normals measure
-    // valid, so the cause is somewhere I could not reach. Rather than ship a
-    // model with black bands, the shading is computed here from the geometry's
-    // own normals and written into vertex colours, with a floor that makes
-    // pure black impossible. Unlit rendering then just displays it.
-    const alloy = data.palette[info.mat] || {rgb: [0.4, 0.42, 0.44]};
-    o.material = bakeShading(o, alloy.rgb, info.mat);
+    o.material = partMaterial(info);
     if(isShell(o.name)) o.material.clippingPlanes = [plane];
     meshInfo.set(o, info);
     pickable.push(o);
@@ -577,6 +608,32 @@ function ready(model){
     corners.push(new THREE.Vector3(size.x*sx, size.y*sy, size.z*sz));
   }
   viewDir = new THREE.Vector3(0.17, -0.27, -0.948).normalize();
+
+  /* Shadows, and something for them to land on.
+   *
+   * The engine was floating in a void: nothing occluded anything, so every
+   * crevice was as bright as the surface beside it and the whole thing read
+   * as a lit diagram rather than an object in a room. The key light now casts,
+   * every mesh both casts and receives, and a transparent catcher under the
+   * engine takes the ground shadow without putting a visible floor slab in
+   * the picture.
+   */
+  const span = Math.max(size.x, size.y, size.z);
+  const sc = keyLight.shadow.camera;
+  sc.left = -span * 0.62; sc.right = span * 0.62;
+  sc.top = span * 0.62;  sc.bottom = -span * 0.62;
+  sc.near = 0.1; sc.far = span * 6.0;
+  sc.updateProjectionMatrix();
+  root.traverse(o => { if(o.isMesh){ o.castShadow = true; o.receiveShadow = true; } });
+
+  const catcher = new THREE.Mesh(
+    new THREE.PlaneGeometry(span * 4, span * 4),
+    new THREE.ShadowMaterial({opacity: 0.34}));
+  catcher.rotation.x = -Math.PI / 2;
+  catcher.position.y = -size.y * 0.62;
+  catcher.receiveShadow = true;
+  scene.add(catcher);
+
   resetView();
 
   addEventListener('resize', onResize);
@@ -584,7 +641,7 @@ function ready(model){
   renderer.domElement.addEventListener('pointerleave', () => setProbe(null));
   buildFlow();
   wireThrottle();
-  window.__dbg = {scene, camera, renderer, root, plane, byModule};
+  window.__dbg = {scene, camera, renderer, root, plane, byModule, controls};
   $('#load').classList.add('done');
   renderer.setAnimationLoop(tick);
   assemble();
@@ -609,8 +666,8 @@ function buildSpools(){
 }
 
 // Afterburner plume. Two nested shells rather than one: a narrow white-hot
-// core inside a wider blue-violet envelope, so it reads as a volume instead of
-// a balloon. Shock diamonds are the standing waves in the supersonic core.
+// core inside a wider amber-to-blue envelope, so it reads as a volume instead
+// of a balloon. Shock diamonds are the standing waves in the supersonic core.
 function plumeShell(rScale, lScale, gain, seed){
   const pts = [];
   for(let i = 0; i <= 46; i++){
@@ -627,9 +684,10 @@ function plumeShell(rScale, lScale, gain, seed){
     side:THREE.DoubleSide,
     uniforms:{
       uTime:{value:0}, uAb:{value:0}, uGain:{value:gain}, uSeed:{value:seed},
-      uCore:{value:new THREE.Color(0xFFF4DC)},
-      uMid:{value:new THREE.Color(0x6E8CFF)},
-      uTail:{value:new THREE.Color(0x3B1D5E)},
+      uCore:{value:new THREE.Color(0xFFF7E6)},
+      uMid:{value:new THREE.Color(0xFFB347)},
+      uHot:{value:new THREE.Color(0xFF5A1F)},
+      uTail:{value:new THREE.Color(0x4A6CF7)},
     },
     vertexShader:`
       varying vec2 vUv; varying vec3 vN; varying vec3 vV;
@@ -642,22 +700,23 @@ function plumeShell(rScale, lScale, gain, seed){
       }`,
     fragmentShader:`
       uniform float uTime, uAb, uGain, uSeed;
-      uniform vec3 uCore, uMid, uTail;
+      uniform vec3 uCore, uMid, uHot, uTail;
       varying vec2 vUv; varying vec3 vN; varying vec3 vV;
       void main(){
         float t = vUv.y;
         float reach = mix(0.22, 1.0, uAb);
-        float env = smoothstep(0.0, 0.02, t) * pow(max(0.0, 1.0 - t/reach), 1.5);
+        float env = smoothstep(0.0, 0.015, t) * pow(max(0.0, 1.0 - t/reach), 1.8);
         // standing shock cells, strongest just aft of the nozzle
-        float d = pow(max(0.0, sin(t*30.0 - uTime*1.5 + uSeed)), 8.0)
-                * smoothstep(0.62, 0.06, t);
-        float flick = 0.90 + 0.10*sin(uTime*37.0 + t*23.0 + uSeed);
+        float d = pow(max(0.0, sin(t*26.0 - uTime*1.5 + uSeed)), 6.0)
+                * smoothstep(0.68, 0.05, t);
+        float flick = 0.92 + 0.08*sin(uTime*31.0 + t*19.0 + uSeed);
         // edge-on rays cross more of the volume, so the silhouette burns brighter
-        float edge = pow(1.0 - abs(dot(normalize(vN), normalize(vV))), 1.7);
-        float a = env * (0.08 + 0.92*edge) * (0.38 + 0.95*d) * flick * uAb * uGain;
-        vec3 col = mix(uCore, uMid, smoothstep(0.015, 0.28, t));
-        col = mix(col, uTail, smoothstep(0.30, 0.88, t));
-        col = mix(col, uCore, clamp(d*0.92, 0.0, 1.0));
+        float edge = pow(1.0 - abs(dot(normalize(vN), normalize(vV))), 1.5);
+        float a = env * (0.30 + 0.70*edge) * (0.55 + 0.75*d) * flick * uAb * uGain;
+        vec3 col = mix(uCore, uMid, smoothstep(0.02, 0.30, t));
+        col = mix(col, uHot, smoothstep(0.22, 0.58, t));
+        col = mix(col, uTail, smoothstep(0.55, 1.0, t));
+        col = mix(col, vec3(1.0, 0.95, 0.85), clamp(d*0.8, 0.0, 1.0));
         gl_FragColor = vec4(col, clamp(a, 0.0, 1.0));
       }`,
   });
@@ -668,8 +727,8 @@ function plumeShell(rScale, lScale, gain, seed){
 
 function buildPlume(){
   plume = new THREE.Group();
-  const outer = plumeShell(1.00, 1.00, 0.62, 0.0);
-  const inner = plumeShell(0.46, 0.66, 1.15, 2.1);
+  const outer = plumeShell(1.00, 1.00, 0.80, 0.0);
+  const inner = plumeShell(0.46, 0.66, 1.35, 2.1);
   plume.add(outer, inner);
   plumeMat = [outer.material, inner.material];
   plume.position.x = data.x_rear * MM;
@@ -1056,7 +1115,7 @@ function tick(){
       m.uniforms.uAb.value = rpm.ab;
     }
     plume.visible = rpm.ab > 0.004;
-    plumeLight.intensity = rpm.ab * 30;
+    plumeLight.intensity = rpm.ab * 55;
   }
   updateFlow(dt);
   const heat = Math.max(0, (rpm.egt - 380) / 820);
