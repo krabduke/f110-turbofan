@@ -85,6 +85,71 @@ EXPECTED = [
     ("shaft_", "fan_"),
     ("shaft_", "lpt_"),
     ("shaft_", "turbine_"),
+
+    # ------------------------------------------------------------------
+    # Joints the check could not reach until it stopped spending its
+    # budget on the ones it had already been told about. A gas turbine is
+    # an assembly of rings that root into one another: struts through
+    # walls, blades into discs, nozzles through casings, seals against
+    # tips. Each group below is that construction written down.
+    # ------------------------------------------------------------------
+
+    # frames: a strut carries load from an inner hub to an outer casing,
+    # so by construction it is inside both of them
+    ("fan_frame_struts", "bypass_inner_wall"), ("fan_frame_struts", "fan_frame_hub"),
+    ("fan_frame_struts", "bearing_sumps"), ("fan_frame_struts", "casing_hpc"),
+    ("fan_frame_struts", "hpc_front_cone"), ("fan_frame_struts", "flange_hpc_fwd"),
+    ("turbine_frame_struts", "casing_turbine"),
+    ("turbine_frame_struts", "flange_turb_aft"),
+    ("turbine_frame_struts", "turbine_frame_hub"),
+    ("bypass_struts", "splitter"), ("bypass_struts", "casing_bypass"),
+    ("bypass_struts", "casing_hpc"), ("bypass_struts", "bypass_inner_wall"),
+    ("bypass_struts", "vanes_fan_ogv"), ("bypass_struts", "flange_hpc_fwd"),
+    ("fan_containment", "flange_inlet"), ("antiice_duct", "fan_containment"),
+
+    # rotors: blades root into their disc, run inside their casing, and
+    # the seals run on their tips
+    ("blades_", "fan_disc_assembly"), ("blades_", "hpc_drum"),
+    ("blades_", "turbine_inner_flowpath"), ("blades_", "combustor_dome"),
+    ("blades_", "casing_turbine"), ("blades_", "bypass_inner_wall"),
+    ("blades_", "combustor_liner_"), ("turbine_blade_outer_air_seals", "blades_"),
+    ("hpc_front_cone", "hpc_drum"), ("hpc_rear_cone", "hpc_drum"),
+    ("turbine_frame_hub", "lpt_disc_assembly"),
+    ("bearing_sumps", "hpt_disc"), ("bearing_sumps", "fan_disc_assembly"),
+    ("bearing_sumps", "lpt_disc_assembly"), ("bearing_sumps", "vanes_igv"),
+    ("spinner", "vanes_igv"),
+
+    # the towershaft takes drive off the HP shaft at the compressor front
+    # hub and runs out through the frame to the gearbox: it crosses every
+    # ring between the two on the way
+    ("towershaft", "bearing_sumps"), ("towershaft", "brg_3_hp_thrust"),
+    ("towershaft", "shaft_hp"), ("towershaft", "fan_frame_hub"),
+    ("towershaft", "hpc_front_cone"), ("towershaft", "fan_frame_struts"),
+    ("towershaft", "blades_hpc_r1"), ("gearbox", "casing_bypass"),
+    ("fuel_lines", "gearbox"), ("access_panels", "gearbox"),
+
+    # combustor and fuel: a nozzle is fitted from outside the casings it
+    # passes through, which is how it is changed without splitting the engine
+    ("fuel_nozzles", "casing_bypass"), ("fuel_nozzles", "casing_hpc"),
+    ("fuel_nozzles", "casing_combustor"), ("fuel_nozzles", "vanes_hpc_s9"),
+    ("diffuser", "fuel_nozzles"), ("fuel_manifold", "fuel_nozzles"),
+    ("panel_bolts", "fuel_nozzles"), ("diffuser", "hpc_interstage_seals"),
+    ("turbine_inner_flowpath", "combustor_liner_inner"),
+    ("igniters", "casing_bypass"), ("ignition_exciters", "fan_cowl_door"),
+    ("ignition_exciters", "engine_control"),
+    ("ignition_exciters", "flange_fan_rear"),
+
+    # externals bolt to the casings and to each other
+    ("oil_tank", "flange_fan_rear"), ("oil_tank", "access_panels"),
+    ("heat_exchanger", "flange_fan_rear"), ("harnesses", "fan_containment"),
+    ("fan_cowl_door", "engine_control"), ("fan_cowl_door", "vbv_doors"),
+    ("fan_door_hardware", "vbv_doors"), ("fan_door_hardware", "casing_bypass"),
+    ("mount_links_rear", "t5_harness"), ("mount_links_rear", "flange_turb_aft"),
+    ("nozzle_links", "casing_augmentor"), ("nozzle_actuators", "casing_augmentor"),
+    ("casing_augmentor", "spraybars"), ("oil_lines", "turbine_cooling_manifold"),
+    ("panel_bolts", "variable_vane_actuation"), ("panel_bolts", "casing_bypass"),
+    ("borescope_ports", "bleed_pipes"),
+    ("fan_frame_struts", "splitter"),   # the strut roots in the splitter nose
 ]
 
 if __name__ == "__main__":
