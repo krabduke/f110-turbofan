@@ -48,12 +48,42 @@ COLLECTIONS = [
 ]
 
 
+def spool_for(name):
+    """Which spool a part turns with, or "" if it does not turn.
+
+    This lived in the viewer as two regular expressions inside a thousand-line
+    HTML file. A rotor added to the engine, or renamed, silently stopped
+    turning, and nothing could test it because the manifest carried no such
+    information -- the other three models in this family all export the axis
+    and role of every moving part and this one exported none.
+
+    The LP spool carries the fan and the low-pressure turbine; the HP spool
+    carries the compressor and the high-pressure turbine and runs faster, the
+    other way.
+    """
+    import re as _re
+    LP = ("spinner", "fan_disc_assembly", "fan_interstage_seals",
+          "shaft_lp", "lpt_disc_assembly")
+    HP = ("hpc_drum", "hpc_front_cone", "hpc_rear_cone",
+          "hpc_interstage_seals", "shaft_hp", "hpt_disc")
+    if name in LP or _re.fullmatch(r"blades_(fan|lpt)_r\d+", name):
+        return "lp"
+    if name in HP or _re.fullmatch(r"blades_(hpc|hpt)_r\d+", name):
+        return "hp"
+    return ""
+
+
 def collection_for(name):
     n = name.lower()
     if n.startswith("shaft") or n.startswith("brg"):
         return "08 Shafts and Bearings"
     if any(k in n for k in ("gearbox", "towershaft", "fuel_line",
-                            "oil_line", "harness", "mount")):
+                            "oil_line", "harness", "mount",
+                            "access_panel", "panel_bolt", "bleed_pipe",
+                            "fan_cowl", "fan_door", "oil_tank",
+                            "heat_exchanger", "engine_control",
+                            "ignition_exciter", "antiice", "inlet_probe",
+                            "borescope", "vbv_", "bearing_sump")):
         return "09 Accessories"
     if any(k in n for k in ("casing", "flange", "frame", "inlet",
                             "bypass", "splitter", "strut")):
@@ -230,7 +260,14 @@ def main():
             obj.data.materials.append(mats[mat_name])
             n_sharp += shade_smooth(obj)
 
-            bb = meshlib.bbox([tuple(v.co) for v in obj.data.vertices])
+            co = [tuple(v.co) for v in obj.data.vertices]
+            bb = meshlib.bbox(co)
+            # True maximum radius from the engine axis. The bounding box cannot
+            # give this: for a full ring at radius r the box corner is at
+            # r*sqrt(2), so a ring reads 41% wider than it is, and a lump
+            # sitting on one side reads no wider than the ring around it. The
+            # envelope check in verify.py needs the real number.
+            r_max = max((math.hypot(c[1], c[2]) for c in co), default=0.0)
             rows.append({
                 "name": name,
                 "collection": cname,
@@ -240,7 +277,18 @@ def main():
                 "x_min_mm": round(bb[0] / MM, 1), "x_max_mm": round(bb[3] / MM, 1),
                 "y_min_mm": round(bb[1] / MM, 1), "y_max_mm": round(bb[4] / MM, 1),
                 "z_min_mm": round(bb[2] / MM, 1), "z_max_mm": round(bb[5] / MM, 1),
+                "r_max_mm": round(r_max / MM, 1),
                 "count": arrays.get(name, ""),
+                # which spool this turns with, and about which axis: the
+                # viewer used to carry this as a regex and could not be tested
+                "spool": spool_for(name),
+                "axis_x": 1.0 if spool_for(name) else "",
+                "axis_y": 0.0 if spool_for(name) else "",
+                "axis_z": 0.0 if spool_for(name) else "",
+                # LP and HP turn opposite ways, which is what cancels most of
+                # the gyroscopic couple
+                "spin": (1.0 if spool_for(name) == "lp"
+                         else (-1.0 if spool_for(name) == "hp" else "")),
             })
         print(f"  [{modname}] {len(objects)} objects in {time.time() - t1:.1f}s")
 
