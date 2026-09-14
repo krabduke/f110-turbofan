@@ -64,6 +64,22 @@ EXPECTED = [
     ("engine_control", "casing_"),
     ("fan_cowl_door", "casing_"),
     ("fan_door_hardware", "fan_cowl_door"),
+    # the flaps hinge on the casing's aft flange, so their forward edge is
+    # buried in its last 10 mm -- that is the joint, not a mistake
+    ("nozzle_ext_flaps", "casing_augmentor"),
+    ("nozzle_actuator_ring", "casing_augmentor"),
+    # the turbine flowpath inner wall is carried on the disc rims: it is the
+    # platform between them, so it shares metal with both discs
+    ("hpt_disc", "turbine_inner_flowpath"),
+    ("lpt_disc_assembly", "turbine_inner_flowpath"),
+    # a variable-vane lever clamps the spindle of the vane it turns, and its
+    # unison rings run along the outside of the casing they are mounted to
+    ("variable_vane_actuation", "vanes_"),
+    ("variable_vane_actuation", "casing_"),
+    ("variable_vane_actuation", "fan_containment"),
+    # compressor casing aft flange, diffuser and combustor dome are one
+    # bolted joint at station 1600
+    ("combustor_dome", "casing_hpc"),
     ("shaft_", "brg_"),
     ("shaft_", "hpc_"),
     ("shaft_", "fan_"),

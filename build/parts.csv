@@ -18,10 +18,10 @@ brg_4_hp_roller,08 Shafts and Bearings,steel,2258,2606,2109.0,2147.0,-212.0,212.
 brg_5_lp_roller,08 Shafts and Bearings,steel,1968,2256,2391.0,2429.0,-152.0,152.0,-152.0,152.0,152.0,,,,,,
 fan_disc_assembly,01 Inlet and Fan,titanium,4032,4032,-120.0,612.8,-318.0,318.0,-318.0,318.0,318.0,,lp,1.0,0.0,0.0,1.0
 fan_interstage_seals,01 Inlet and Fan,steel,5760,5760,209.7,506.5,-308.0,308.0,-308.0,308.0,308.0,,lp,1.0,0.0,0.0,1.0
-hpc_drum,02 HP Compressor,titanium,5760,5760,730.6,1598.6,-360.0,360.0,-360.0,360.0,360.0,,hp,1.0,0.0,0.0,-1.0
+hpc_drum,02 HP Compressor,titanium,5760,5760,730.6,1536.0,-360.0,360.0,-360.0,360.0,360.0,,hp,1.0,0.0,0.0,-1.0
 hpc_front_cone,02 HP Compressor,steel,1728,1728,730.6,880.6,-319.5,319.5,-319.5,319.5,319.5,,hp,1.0,0.0,0.0,-1.0
 hpc_interstage_seals,02 HP Compressor,steel,18432,18432,875.8,1545.8,-361.0,361.0,-361.0,361.0,361.0,,hp,1.0,0.0,0.0,-1.0
-hpc_rear_cone,02 HP Compressor,steel,1728,1728,1448.6,1598.6,-341.6,341.6,-341.6,341.6,341.6,,hp,1.0,0.0,0.0,-1.0
+hpc_rear_cone,02 HP Compressor,steel,1728,1728,1386.0,1536.0,-341.6,341.6,-341.6,341.6,341.6,,hp,1.0,0.0,0.0,-1.0
 shaft_hp,08 Shafts and Bearings,steel,1728,1728,730.0,2120.0,-172.8,172.8,-172.8,172.8,172.8,,hp,1.0,0.0,0.0,-1.0
 shaft_lp,08 Shafts and Bearings,steel,2016,2016,-140.0,2420.0,-111.7,111.7,-111.7,111.7,111.7,,lp,1.0,0.0,0.0,1.0
 spinner,01 Inlet and Fan,titanium,5185,5184,-400.0,40.0,-232.0,232.0,-232.0,232.0,232.0,,lp,1.0,0.0,0.0,1.0
@@ -68,7 +68,7 @@ combustor_liner_inner,03 Combustor,hot_nickel,7920,7072,1620.0,1980.0,-317.0,317
 combustor_liner_outer,03 Combustor,hot_nickel,7855,6144,1620.0,1980.0,-437.0,437.0,-437.0,437.0,437.0,,,,,,
 combustor_swirlers,03 Combustor,hot_nickel,3200,2400,1604.0,1636.0,-400.6,400.6,-400.6,400.6,400.6,,,,,,
 diffuser,03 Combustor,hot_nickel,1344,1296,1540.0,1640.0,-430.0,430.0,-430.0,430.0,430.0,,,,,,
-fuel_manifold,03 Combustor,steel,2016,2016,1541.0,1567.0,-538.7,538.7,-538.7,538.7,538.7,,,,,,
+fuel_manifold,03 Combustor,steel,2016,2016,1541.0,1567.0,-510.7,510.7,-510.7,510.7,510.7,,,,,,
 fuel_nozzles,03 Combustor,steel,4360,4760,1550.0,1638.0,-534.0,534.0,-534.0,534.0,534.6,,,,,,
 igniters,03 Combustor,steel,188,192,1660.0,1720.0,-445.2,445.2,-380.4,380.4,556.8,,,,,,
 blades_hpt_ngv,04 Turbines,hot_nickel,11868,7728,1958.4,2050.0,-406.0,406.0,-406.0,406.0,406.0,46,,,,,
@@ -99,7 +99,7 @@ bearing_sumps,09 Accessories,steel,1300,1260,-114.0,2464.0,-230.0,230.0,-291.4,2
 bleed_pipes,09 Accessories,casing_alloy,750,714,817.4,1565.6,-509.7,520.7,-446.1,446.1,647.0,,,,,,
 borescope_ports,09 Accessories,steel,672,672,874.0,2406.0,381.6,454.3,-406.2,412.7,588.4,,,,,,
 engine_control,09 Accessories,casing_alloy,664,660,306.0,566.0,-695.2,-324.4,31.2,583.9,753.5,,,,,,
-fan_containment,01 Inlet and Fan,titanium,864,864,26.0,250.0,-629.2,629.2,-629.2,629.2,629.2,,,,,,
+fan_containment,01 Inlet and Fan,titanium,864,864,20.0,190.0,-630.1,630.1,-630.1,630.1,630.1,,,,,,
 fan_cowl_door,09 Accessories,casing_alloy,585,574,286.0,760.0,-464.4,-60.2,370.5,602.9,606.3,,,,,,
 fan_door_hardware,09 Accessories,casing_alloy,1176,1218,316.9,680.2,-454.5,146.7,391.1,608.0,613.5,,,,,,
 fuel_lines,09 Accessories,steel,1488,1576,901.3,1580.6,-348.3,340.3,-638.2,-467.7,660.4,,,,,,
