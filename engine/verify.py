@@ -6,6 +6,7 @@ is the command that settles whether the model is right.
 """
 
 import csv
+import re
 import math
 import os
 import sys
@@ -82,8 +83,60 @@ def main():
 
     print("\nCOMPLETENESS")
     c.true("object count", len(rows) >= 95, f"{len(rows)} objects")
+    # Every rotor turns with a spool.
+    #
+    # The viewer used to decide this with a regex in its HTML, so a rotor that
+    # was added or renamed silently stopped turning and no test could see it.
+    # The build assigns it now, and this is the test: anything whose name says
+    # it is a rotating blade row, disc, drum or shaft must have been given a
+    # spool, and nothing static may have been given one.
+    spun = [r for r in rows if (r.get("spool") or "")]
+    turning = re.compile(r"^(blades_(fan|hpc|hpt|lpt)_r\d+|shaft_(lp|hp)"
+                         r"|hpc_drum|hpt_disc|fan_disc_assembly"
+                         r"|lpt_disc_assembly|spinner)$")
+    missed = [r["name"] for r in rows
+              if turning.match(r["name"]) and not (r.get("spool") or "")]
+    stray = [r["name"] for r in spun if not turning.match(r["name"])
+             and "cone" not in r["name"] and "seals" not in r["name"]]
+    c.true("every rotor is assigned to a spool", not missed and not stray,
+           f"{len(spun)} rotating parts")
+    for mm in missed:
+        c.fails.append(f"rotor with no spool: {mm}")
+    for mm in stray:
+        c.fails.append(f"static part assigned a spool: {mm}")
+
     c.true("every object has a material",
            all(r["material"] for r in rows), "all assigned")
+    # A name in MATERIAL_MAP that is not in PALETTE silently falls back to the
+    # default, so a part ends up the wrong material and nothing says so. Caught
+    # exactly that: "steel_polished" was assigned to six new parts and does not
+    # exist -- the palette calls it "steel".
+    unknown = sorted({v for v in spec.MATERIAL_MAP.values()
+                      if v not in spec.PALETTE})
+    # Installed envelope.
+    #
+    # `attached` cannot catch a unit that floats: the oil tank, heat exchanger,
+    # control and exciters were each built as a revolve running along x and
+    # then rotated so their length pointed outward, which put them 1,070 to
+    # 1,247 mm from an axis whose casings stop at 606. They passed the
+    # attachment test because their mounting straps still wrapped the casing.
+    # An engine has to go inside a nacelle, so the radius every part actually
+    # reaches is a real constraint and a real test. Ratchet: lower it when the
+    # installation gets tighter, never raise it to make a build pass.
+    ENVELOPE_R = 860.0
+    over = [(r["name"], float(r["r_max_mm"])) for r in rows
+            if r.get("r_max_mm") and float(r["r_max_mm"]) > ENVELOPE_R]
+    c.true("every part inside the installed envelope", not over,
+           f"widest {max((float(r['r_max_mm']) for r in rows if r.get('r_max_mm')), default=0):.0f} mm"
+           f" of {ENVELOPE_R:.0f}"
+           + ("" if not over else ": " + ", ".join(f"{n} {v:.0f}" for n, v in over[:4])))
+
+    c.true("every material name is real", not unknown,
+           f"{len(spec.PALETTE)} in palette"
+           + (f", unknown: {', '.join(unknown)}" if unknown else ""))
+    used = sorted({r["material"] for r in rows if r["material"]})
+    c.true("every material used is in the palette",
+           all(m in spec.PALETTE for m in used), f"{len(used)} used")
     c.true("no empty meshes",
            all(int(r["verts"]) > 0 for r in rows), "all non-empty")
 

@@ -84,6 +84,11 @@ def main():
         "m": r["collection"], "mat": r["material"],
         "x0": float(r["x_min_mm"]), "x1": float(r["x_max_mm"]),
         "f": int(r["faces"]), "n": r["count"] or None,
+        # which spool this part turns with, and which way. The viewer used to
+        # hold this as two regular expressions in its HTML, where a renamed
+        # rotor stopped turning silently and nothing could test it.
+        "spool": r.get("spool") or None,
+        "spin": float(r["spin"]) if r.get("spin") else None,
     } for r in rows}
 
     out = {

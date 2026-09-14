@@ -9,8 +9,12 @@ all: build verify render export
 build:                       ## generate geometry and assemble the .blend
 	$(BLENDER) --background --python engine/assemble.py
 
-verify: 
+verify:
 	python3 engine/verify.py
+	python3 tools/audit_structure.py
+	python3 tools/audit_geometry.py
+	python3 tools/check_vendor.py
+	node tools/validate_viewer.mjs .
 
 render: 
 	$(BLENDER) -b $(BLEND) -P engine/render.py -- all $(SAMPLES)
