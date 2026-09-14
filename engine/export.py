@@ -111,7 +111,10 @@ def export_glb(name="f110.glb", draco=False):
     return path
 
 
-def export_web(target_faces=260000):
+def export_web(target_faces=680000):
+    # Raised from 260,000. The source model carries about 1.5 M vertices and
+    # the browser was being handed a sixth of that, so every improvement to
+    # the geometry was being decimated away before anyone saw it.
     """A decimated GLB small enough to load in a browser. Decimation is applied
     proportionally, so dense blade rows lose the most and small hardware keeps
     its shape."""

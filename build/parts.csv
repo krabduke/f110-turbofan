@@ -1,39 +1,39 @@
 name,collection,material,verts,faces,x_min_mm,x_max_mm,y_min_mm,y_max_mm,z_min_mm,z_max_mm,r_max_mm,count,spool,axis_x,axis_y,axis_z,spin
-blades_fan_r1,01 Inlet and Fan,titanium,8960,7840,3.5,201.5,-590.0,590.0,-590.0,590.0,590.0,,lp,1.0,0.0,0.0,1.0
-blades_fan_r2,01 Inlet and Fan,titanium,12320,10780,298.5,436.5,-582.9,582.9,-582.9,582.9,583.0,,lp,1.0,0.0,0.0,1.0
-blades_fan_r3,01 Inlet and Fan,titanium,14560,12740,511.0,619.0,-574.7,574.7,-574.7,574.7,575.0,,lp,1.0,0.0,0.0,1.0
-blades_hpc_r1,02 HP Compressor,titanium,10640,9310,783.4,862.6,-456.8,456.8,-458.0,458.0,458.0,,hp,1.0,0.0,0.0,-1.0
-blades_hpc_r2,02 HP Compressor,titanium,12320,10780,920.2,989.8,-444.0,444.0,-444.0,444.0,445.0,,hp,1.0,0.0,0.0,-1.0
-blades_hpc_r3,02 HP Compressor,titanium,14000,12250,1042.9,1104.1,-431.3,431.3,-432.0,432.0,432.0,,hp,1.0,0.0,0.0,-1.0
-blades_hpc_r4,02 HP Compressor,titanium,15680,13720,1153.5,1207.5,-419.4,419.4,-419.4,419.4,420.0,,hp,1.0,0.0,0.0,-1.0
-blades_hpc_r5,02 HP Compressor,titanium,17360,15190,1252.0,1300.0,-408.5,408.5,-409.0,409.0,409.0,,hp,1.0,0.0,0.0,-1.0
-blades_hpc_r6,02 HP Compressor,titanium,19040,16660,1340.5,1382.5,-397.6,397.6,-397.6,397.6,398.0,,hp,1.0,0.0,0.0,-1.0
-blades_hpc_r7,02 HP Compressor,titanium,20720,18130,1418.9,1456.1,-386.7,386.7,-387.0,387.0,387.0,,hp,1.0,0.0,0.0,-1.0
-blades_hpc_r8,02 HP Compressor,titanium,22400,19600,1489.3,1521.7,-375.8,375.8,-375.8,375.8,376.0,,hp,1.0,0.0,0.0,-1.0
-blades_hpc_r9,02 HP Compressor,titanium,24080,21070,1550.6,1579.4,-365.8,365.8,-366.0,366.0,366.0,,hp,1.0,0.0,0.0,-1.0
+blades_fan_r1,01 Inlet and Fan,titanium,17536,16032,3.5,201.5,-590.0,590.0,-590.0,590.0,590.0,,lp,1.0,0.0,0.0,1.0
+blades_fan_r2,01 Inlet and Fan,titanium,24112,22044,298.5,436.5,-582.9,582.9,-582.9,582.9,583.0,,lp,1.0,0.0,0.0,1.0
+blades_fan_r3,01 Inlet and Fan,titanium,28496,26052,511.0,619.0,-574.7,574.7,-574.7,574.7,575.0,,lp,1.0,0.0,0.0,1.0
+blades_hpc_r1,02 HP Compressor,titanium,20824,19038,783.4,862.6,-456.8,456.8,-458.0,458.0,458.0,,hp,1.0,0.0,0.0,-1.0
+blades_hpc_r2,02 HP Compressor,titanium,24112,22044,920.2,989.8,-444.0,444.0,-444.0,444.0,445.0,,hp,1.0,0.0,0.0,-1.0
+blades_hpc_r3,02 HP Compressor,titanium,27400,25050,1042.9,1104.1,-431.3,431.3,-432.0,432.0,432.0,,hp,1.0,0.0,0.0,-1.0
+blades_hpc_r4,02 HP Compressor,titanium,30688,28056,1153.5,1207.5,-419.4,419.4,-419.4,419.4,420.0,,hp,1.0,0.0,0.0,-1.0
+blades_hpc_r5,02 HP Compressor,titanium,33976,31062,1252.0,1300.0,-408.5,408.5,-409.0,409.0,409.0,,hp,1.0,0.0,0.0,-1.0
+blades_hpc_r6,02 HP Compressor,titanium,37264,34068,1340.5,1382.5,-397.6,397.6,-397.6,397.6,398.0,,hp,1.0,0.0,0.0,-1.0
+blades_hpc_r7,02 HP Compressor,titanium,40552,37074,1418.9,1456.1,-386.7,386.7,-387.0,387.0,387.0,,hp,1.0,0.0,0.0,-1.0
+blades_hpc_r8,02 HP Compressor,titanium,43840,40080,1489.3,1521.7,-375.8,375.8,-375.8,375.8,376.0,,hp,1.0,0.0,0.0,-1.0
+blades_hpc_r9,02 HP Compressor,titanium,47128,43086,1550.6,1579.4,-365.8,365.8,-366.0,366.0,366.0,,hp,1.0,0.0,0.0,-1.0
 brg_1_lp_thrust,08 Shafts and Bearings,steel,4788,5112,-83.0,-37.0,-150.0,150.0,-150.0,150.0,150.0,,,,,,
 brg_2_lp_roller,08 Shafts and Bearings,steel,2258,2606,671.0,709.0,-148.0,148.0,-148.0,148.0,148.0,,,,,,
 brg_3_hp_thrust,08 Shafts and Bearings,steel,4788,5112,722.0,768.0,-214.0,214.0,-214.0,214.0,214.0,,,,,,
 brg_4_hp_roller,08 Shafts and Bearings,steel,2258,2606,2109.0,2147.0,-212.0,212.0,-212.0,212.0,212.0,,,,,,
 brg_5_lp_roller,08 Shafts and Bearings,steel,1968,2256,2391.0,2429.0,-152.0,152.0,-152.0,152.0,152.0,,,,,,
-fan_disc_assembly,01 Inlet and Fan,titanium,3456,3456,-120.0,612.8,-318.0,318.0,-318.0,318.0,318.0,,lp,1.0,0.0,0.0,1.0
-fan_interstage_seals,01 Inlet and Fan,steel,3840,3840,209.7,506.5,-308.0,308.0,-308.0,308.0,308.0,,lp,1.0,0.0,0.0,1.0
-hpc_drum,02 HP Compressor,titanium,3840,3840,730.6,1598.6,-360.0,360.0,-360.0,360.0,360.0,,hp,1.0,0.0,0.0,-1.0
-hpc_front_cone,02 HP Compressor,steel,1152,1152,730.6,880.6,-319.5,319.5,-319.5,319.5,319.5,,hp,1.0,0.0,0.0,-1.0
-hpc_interstage_seals,02 HP Compressor,steel,12288,12288,875.8,1545.8,-361.0,361.0,-361.0,361.0,361.0,,hp,1.0,0.0,0.0,-1.0
-hpc_rear_cone,02 HP Compressor,steel,1152,1152,1448.6,1598.6,-341.6,341.6,-341.6,341.6,341.6,,hp,1.0,0.0,0.0,-1.0
+fan_disc_assembly,01 Inlet and Fan,titanium,4032,4032,-120.0,612.8,-318.0,318.0,-318.0,318.0,318.0,,lp,1.0,0.0,0.0,1.0
+fan_interstage_seals,01 Inlet and Fan,steel,5760,5760,209.7,506.5,-308.0,308.0,-308.0,308.0,308.0,,lp,1.0,0.0,0.0,1.0
+hpc_drum,02 HP Compressor,titanium,5760,5760,730.6,1598.6,-360.0,360.0,-360.0,360.0,360.0,,hp,1.0,0.0,0.0,-1.0
+hpc_front_cone,02 HP Compressor,steel,1728,1728,730.6,880.6,-319.5,319.5,-319.5,319.5,319.5,,hp,1.0,0.0,0.0,-1.0
+hpc_interstage_seals,02 HP Compressor,steel,18432,18432,875.8,1545.8,-361.0,361.0,-361.0,361.0,361.0,,hp,1.0,0.0,0.0,-1.0
+hpc_rear_cone,02 HP Compressor,steel,1728,1728,1448.6,1598.6,-341.6,341.6,-341.6,341.6,341.6,,hp,1.0,0.0,0.0,-1.0
 shaft_hp,08 Shafts and Bearings,steel,1728,1728,730.0,2120.0,-172.8,172.8,-172.8,172.8,172.8,,hp,1.0,0.0,0.0,-1.0
 shaft_lp,08 Shafts and Bearings,steel,2016,2016,-140.0,2420.0,-111.7,111.7,-111.7,111.7,111.7,,lp,1.0,0.0,0.0,1.0
-spinner,01 Inlet and Fan,titanium,3457,3456,-400.0,40.0,-232.0,232.0,-232.0,232.0,232.0,,lp,1.0,0.0,0.0,1.0
-bypass_inner_wall,07 Casings and Frames,casing_alloy,960,960,580.0,2520.0,-492.0,492.0,-492.0,492.0,492.0,,,,,,
+spinner,01 Inlet and Fan,titanium,5185,5184,-400.0,40.0,-232.0,232.0,-232.0,232.0,232.0,,lp,1.0,0.0,0.0,1.0
+bypass_inner_wall,07 Casings and Frames,casing_alloy,1440,1440,580.0,2520.0,-492.0,492.0,-492.0,492.0,492.0,,,,,,
 bypass_struts,07 Casings and Frames,casing_alloy,1000,820,628.0,808.0,-572.0,572.0,-549.0,549.0,572.0,,,,,,
-casing_augmentor,07 Casings and Frames,casing_alloy,1920,1920,2520.0,3640.0,-490.4,490.4,-490.4,490.4,490.4,,,,,,
-casing_bypass,07 Casings and Frames,casing_alloy,3072,3072,580.0,2520.0,-596.7,596.7,-596.7,596.7,596.7,,,,,,
-casing_combustor,07 Casings and Frames,hot_nickel,1920,1920,1600.0,1990.0,-507.6,507.6,-507.6,507.6,507.6,,,,,,
-casing_fan,07 Casings and Frames,casing_alloy,1920,1920,0.0,580.0,-618.2,618.2,-618.2,618.2,618.2,,,,,,
-casing_hpc,07 Casings and Frames,casing_alloy,1920,1920,760.0,1600.0,-491.9,491.9,-491.9,491.9,491.9,,,,,,
-casing_inlet,07 Casings and Frames,casing_alloy,1920,1920,-420.0,0.0,-614.5,614.5,-614.5,614.5,614.5,,,,,,
-casing_turbine,07 Casings and Frames,hot_nickel,1920,1920,1990.0,2520.0,-489.7,489.7,-489.7,489.7,489.8,,,,,,
+casing_augmentor,07 Casings and Frames,casing_alloy,2880,2880,2520.0,3640.0,-490.4,490.4,-490.4,490.4,490.4,,,,,,
+casing_bypass,07 Casings and Frames,casing_alloy,4608,4608,580.0,2520.0,-596.7,596.7,-596.7,596.7,596.7,,,,,,
+casing_combustor,07 Casings and Frames,hot_nickel,2880,2880,1600.0,1990.0,-507.6,507.6,-507.6,507.6,507.6,,,,,,
+casing_fan,07 Casings and Frames,casing_alloy,2880,2880,0.0,580.0,-618.2,618.2,-618.2,618.2,618.2,,,,,,
+casing_hpc,07 Casings and Frames,casing_alloy,2880,2880,760.0,1600.0,-491.9,491.9,-491.9,491.9,491.9,,,,,,
+casing_inlet,07 Casings and Frames,casing_alloy,2880,2880,-420.0,0.0,-614.5,614.5,-614.5,614.5,614.5,,,,,,
+casing_turbine,07 Casings and Frames,hot_nickel,2880,2880,1990.0,2520.0,-489.7,489.7,-489.7,489.7,489.8,,,,,,
 fan_frame_hub,07 Casings and Frames,casing_alloy,1152,1152,610.0,790.0,-170.0,170.0,-170.0,170.0,170.0,,,,,,
 fan_frame_struts,07 Casings and Frames,casing_alloy,800,656,640.0,790.0,-480.0,480.0,-480.0,480.0,480.0,,,,,,
 flange_aug_aft,07 Casings and Frames,casing_alloy,1784,2064,3630.0,3661.0,-466.0,466.0,-466.0,466.0,466.0,,,,,,
@@ -43,50 +43,50 @@ flange_hpc_aft,07 Casings and Frames,casing_alloy,1884,2184,1588.0,1625.2,-504.0
 flange_hpc_fwd,07 Casings and Frames,casing_alloy,1884,2184,750.0,781.0,-498.0,498.0,-498.0,498.0,498.0,,,,,,
 flange_inlet,07 Casings and Frames,casing_alloy,2184,2544,-10.0,21.0,-626.0,626.0,-626.0,626.0,626.0,,,,,,
 flange_turb_aft,07 Casings and Frames,casing_alloy,1984,2304,2508.0,2545.2,-496.0,496.0,-496.0,496.0,496.0,,,,,,
-inlet_case,07 Casings and Frames,casing_alloy,960,960,-420.0,0.0,-592.5,592.5,-592.5,592.5,592.5,,,,,,
-inlet_lip,07 Casings and Frames,casing_alloy,1632,1632,-420.0,-368.0,-613.0,613.0,-613.0,613.0,613.0,,,,,,
+inlet_case,07 Casings and Frames,casing_alloy,1440,1440,-420.0,0.0,-592.5,592.5,-592.5,592.5,592.5,,,,,,
+inlet_lip,07 Casings and Frames,casing_alloy,2448,2448,-420.0,-368.0,-613.0,613.0,-613.0,613.0,613.0,,,,,,
 mount_trunnions,09 Accessories,steel,328,400,654.0,2566.0,-424.0,424.0,306.5,578.2,675.2,,,,,,
-splitter,07 Casings and Frames,titanium,1440,1440,546.0,640.0,-493.0,493.0,-493.0,493.0,493.0,,,,,,
+splitter,07 Casings and Frames,titanium,2160,2160,546.0,640.0,-493.0,493.0,-493.0,493.0,493.0,,,,,,
 turbine_frame_hub,07 Casings and Frames,hot_nickel,1152,1152,2450.0,2590.0,-190.0,190.0,-190.0,190.0,190.0,,,,,,
 turbine_frame_struts,07 Casings and Frames,hot_nickel,800,656,2452.0,2622.0,-466.0,466.0,-466.0,466.0,466.0,,,,,,
-vanes_fan_ogv,01 Inlet and Fan,composite,24640,22240,613.4,681.6,-580.0,580.0,-580.0,580.0,580.0,,,,,,
-vanes_fan_s1,01 Inlet and Fan,titanium,18480,16680,206.0,299.0,-597.0,597.0,-597.0,597.0,597.0,,,,,,
-vanes_fan_s2,01 Inlet and Fan,titanium,22176,20016,437.8,512.2,-589.0,589.0,-589.0,589.0,589.0,,,,,,
-vanes_hpc_s1,02 HP Compressor,steel,16016,14456,862.5,919.5,-461.0,461.0,-461.0,461.0,461.0,,,,,,
-vanes_hpc_s2,02 HP Compressor,steel,17864,16124,991.1,1041.9,-448.0,448.0,-448.0,448.0,448.0,,,,,,
-vanes_hpc_s3,02 HP Compressor,steel,19712,17792,1105.6,1151.4,-436.0,436.0,-436.0,436.0,436.0,,,,,,
-vanes_hpc_s4,02 HP Compressor,steel,21560,19460,1209.0,1250.0,-424.0,424.0,-424.0,424.0,424.0,,,,,,
-vanes_hpc_s5,02 HP Compressor,steel,23408,21128,1302.5,1338.5,-413.0,413.0,-413.0,413.0,413.0,,,,,,
-vanes_hpc_s6,02 HP Compressor,steel,25256,22796,1384.9,1417.1,-402.0,402.0,-402.0,402.0,402.0,,,,,,
-vanes_hpc_s7,02 HP Compressor,steel,27104,24464,1458.2,1486.8,-391.0,391.0,-391.0,391.0,391.0,,,,,,
-vanes_hpc_s8,02 HP Compressor,steel,28952,26132,1523.6,1548.4,-380.0,380.0,-380.0,380.0,380.0,,,,,,
-vanes_hpc_s9,02 HP Compressor,steel,30800,27800,1581.8,1604.2,-371.0,371.0,-371.0,371.0,371.0,,,,,,
-vanes_igv,01 Inlet and Fan,titanium,8624,7784,-98.4,-11.6,-600.0,600.0,-600.0,600.0,600.0,,,,,,
-variable_vane_actuation,01 Inlet and Fan,steel,20956,23052,-73.0,1135.8,-635.0,635.0,-635.0,635.0,635.0,,,,,,
-combustor_dome,03 Combustor,hot_nickel,1824,1824,1555.6,1646.0,-420.0,420.0,-420.0,420.0,420.0,,,,,,
-combustor_liner_inner,03 Combustor,hot_nickel,5903,5056,1620.0,1980.0,-317.0,317.0,-317.0,317.0,317.0,,,,,,
-combustor_liner_outer,03 Combustor,hot_nickel,5871,4192,1620.0,1980.0,-437.0,437.0,-437.0,437.0,437.0,,,,,,
+vanes_fan_ogv,01 Inlet and Fan,composite,46080,42720,613.4,681.6,-580.0,580.0,-580.0,580.0,580.0,,,,,,
+vanes_fan_s1,01 Inlet and Fan,titanium,34560,32040,206.0,299.0,-597.0,597.0,-597.0,597.0,597.0,,,,,,
+vanes_fan_s2,01 Inlet and Fan,titanium,41472,38448,437.8,512.2,-589.0,589.0,-589.0,589.0,589.0,,,,,,
+vanes_hpc_s1,02 HP Compressor,steel,29952,27768,862.5,919.5,-461.0,461.0,-461.0,461.0,461.0,,,,,,
+vanes_hpc_s2,02 HP Compressor,steel,33408,30972,991.1,1041.9,-448.0,448.0,-448.0,448.0,448.0,,,,,,
+vanes_hpc_s3,02 HP Compressor,steel,36864,34176,1105.6,1151.4,-436.0,436.0,-436.0,436.0,436.0,,,,,,
+vanes_hpc_s4,02 HP Compressor,steel,40320,37380,1209.0,1250.0,-424.0,424.0,-424.0,424.0,424.0,,,,,,
+vanes_hpc_s5,02 HP Compressor,steel,43776,40584,1302.5,1338.5,-413.0,413.0,-413.0,413.0,413.0,,,,,,
+vanes_hpc_s6,02 HP Compressor,steel,47232,43788,1384.9,1417.1,-402.0,402.0,-402.0,402.0,402.0,,,,,,
+vanes_hpc_s7,02 HP Compressor,steel,50688,46992,1458.2,1486.8,-391.0,391.0,-391.0,391.0,391.0,,,,,,
+vanes_hpc_s8,02 HP Compressor,steel,54144,50196,1523.6,1548.4,-380.0,380.0,-380.0,380.0,380.0,,,,,,
+vanes_hpc_s9,02 HP Compressor,steel,57600,53400,1581.8,1604.2,-371.0,371.0,-371.0,371.0,371.0,,,,,,
+vanes_igv,01 Inlet and Fan,titanium,16128,14952,-98.4,-11.6,-600.0,600.0,-600.0,600.0,600.0,,,,,,
+variable_vane_actuation,01 Inlet and Fan,steel,23836,25932,-73.0,1135.8,-635.0,635.0,-635.0,635.0,635.0,,,,,,
+combustor_dome,03 Combustor,hot_nickel,2736,2736,1555.6,1646.0,-420.0,420.0,-420.0,420.0,420.0,,,,,,
+combustor_liner_inner,03 Combustor,hot_nickel,7920,7072,1620.0,1980.0,-317.0,317.0,-317.0,317.0,317.0,,,,,,
+combustor_liner_outer,03 Combustor,hot_nickel,7855,6144,1620.0,1980.0,-437.0,437.0,-437.0,437.0,437.0,,,,,,
 combustor_swirlers,03 Combustor,hot_nickel,3200,2400,1604.0,1636.0,-400.6,400.6,-400.6,400.6,400.6,,,,,,
-diffuser,03 Combustor,hot_nickel,960,912,1540.0,1640.0,-430.0,430.0,-430.0,430.0,430.0,,,,,,
-fuel_manifold,03 Combustor,steel,1344,1344,1541.0,1567.0,-538.7,538.7,-538.7,538.7,538.7,,,,,,
+diffuser,03 Combustor,hot_nickel,1344,1296,1540.0,1640.0,-430.0,430.0,-430.0,430.0,430.0,,,,,,
+fuel_manifold,03 Combustor,steel,2016,2016,1541.0,1567.0,-538.7,538.7,-538.7,538.7,538.7,,,,,,
 fuel_nozzles,03 Combustor,steel,4360,4760,1550.0,1638.0,-534.0,534.0,-534.0,534.0,534.6,,,,,,
 igniters,03 Combustor,steel,188,192,1660.0,1720.0,-445.2,445.2,-380.4,380.4,556.8,,,,,,
-blades_hpt_ngv,04 Turbines,hot_nickel,11408,7406,1957.5,2050.0,-406.0,406.0,-406.0,406.0,406.0,46,,,,,
-blades_hpt_r1,04 Turbines,hot_nickel,70272,23544,2050.2,2107.8,-412.0,412.0,-412.0,412.0,412.0,72,hp,1.0,0.0,0.0,-1.0
-blades_lpt_r1,04 Turbines,hot_nickel,26752,23848,2193.8,2244.2,-434.0,434.0,-434.0,434.0,434.0,,lp,1.0,0.0,0.0,1.0
-blades_lpt_r2,04 Turbines,hot_nickel,29184,26016,2300.2,2345.8,-458.0,458.0,-458.0,458.0,458.0,,lp,1.0,0.0,0.0,1.0
-blades_lpt_s1,04 Turbines,hot_nickel,61876,34472,2134.5,2191.5,-424.0,424.0,-424.0,424.0,424.0,62,,,,,
-blades_lpt_s2,04 Turbines,hot_nickel,21560,19460,2247.2,2296.8,-446.0,446.0,-446.0,446.0,446.0,,,,,,
-hpt_disc,04 Turbines,hot_nickel,1152,1152,1920.0,2113.8,-303.0,303.0,-303.0,303.0,303.0,,hp,1.0,0.0,0.0,-1.0
-lpt_disc_assembly,04 Turbines,hot_nickel,2304,2304,2189.6,2490.0,-295.0,295.0,-295.0,295.0,295.0,,lp,1.0,0.0,0.0,1.0
-turbine_blade_outer_air_seals,04 Turbines,hot_nickel,1152,1152,2045.4,2349.6,-477.0,477.0,-477.0,477.0,477.0,,,,,,
-turbine_inner_flowpath,04 Turbines,hot_nickel,960,960,1970.0,2410.0,-314.5,314.5,-314.5,314.5,314.5,,,,,,
-turbine_interstage_seals,04 Turbines,steel,1536,1536,2115.0,2128.5,-300.0,300.0,-300.0,300.0,300.0,,,,,,
-augmentor_liner,05 Augmentor,thermal_barrier,19614,12880,2740.0,3640.0,-410.3,410.3,-410.3,410.3,410.3,,,,,,
-flameholder,05 Augmentor,hot_nickel,1840,1812,2843.0,2880.4,-367.0,367.0,-404.0,404.0,404.1,,,,,,
-mixer,05 Augmentor,hot_nickel,3456,3456,2520.0,2760.0,-438.0,438.0,-438.0,438.0,438.0,,,,,,
+blades_hpt_ngv,04 Turbines,hot_nickel,11868,7728,1958.4,2050.0,-406.0,406.0,-406.0,406.0,406.0,46,,,,,
+blades_hpt_r1,04 Turbines,hot_nickel,89856,42552,2050.2,2107.8,-412.0,412.0,-412.0,412.0,412.0,72,hp,1.0,0.0,0.0,-1.0
+blades_lpt_r1,04 Turbines,hot_nickel,50336,46376,2193.8,2244.2,-434.0,434.0,-434.0,434.0,434.0,,lp,1.0,0.0,0.0,1.0
+blades_lpt_r2,04 Turbines,hot_nickel,54912,50592,2300.2,2345.8,-458.0,458.0,-458.0,458.0,458.0,,lp,1.0,0.0,0.0,1.0
+blades_lpt_s1,04 Turbines,hot_nickel,78926,52762,2134.5,2191.5,-424.0,424.0,-424.0,424.0,424.0,62,,,,,
+blades_lpt_s2,04 Turbines,hot_nickel,40320,37380,2247.2,2296.8,-446.0,446.0,-446.0,446.0,446.0,,,,,,
+hpt_disc,04 Turbines,hot_nickel,1344,1344,1920.0,2113.8,-303.0,303.0,-303.0,303.0,303.0,,hp,1.0,0.0,0.0,-1.0
+lpt_disc_assembly,04 Turbines,hot_nickel,2688,2688,2189.6,2490.0,-295.0,295.0,-295.0,295.0,295.0,,lp,1.0,0.0,0.0,1.0
+turbine_blade_outer_air_seals,04 Turbines,hot_nickel,1728,1728,2045.4,2349.6,-477.0,477.0,-477.0,477.0,477.0,,,,,,
+turbine_inner_flowpath,04 Turbines,hot_nickel,1440,1440,1970.0,2410.0,-314.5,314.5,-314.5,314.5,314.5,,,,,,
+turbine_interstage_seals,04 Turbines,steel,2304,2304,2115.0,2128.5,-300.0,300.0,-300.0,300.0,300.0,,,,,,
+augmentor_liner,05 Augmentor,thermal_barrier,19182,13716,2740.0,3640.0,-410.3,410.3,-410.3,410.3,410.3,,,,,,
+flameholder,05 Augmentor,hot_nickel,2704,2676,2843.0,2880.4,-367.0,367.0,-404.0,404.0,404.1,,,,,,
+mixer,05 Augmentor,hot_nickel,5184,5184,2520.0,2760.0,-438.0,438.0,-438.0,438.0,438.0,,,,,,
 spraybars,05 Augmentor,steel,6400,7296,2776.0,2824.0,-496.0,496.0,-496.0,496.0,496.6,,,,,,
-nozzle_actuator_ring,06 Nozzle,steel,1344,1344,3570.0,3610.0,-471.5,471.5,-471.5,471.5,471.5,,,,,,
+nozzle_actuator_ring,06 Nozzle,steel,2016,2016,3570.0,3610.0,-471.5,471.5,-471.5,471.5,471.5,,,,,,
 nozzle_actuators,06 Nozzle,steel,840,996,3317.0,3590.0,-512.0,512.0,-447.4,447.4,512.0,,,,,,
 nozzle_ext_flaps,06 Nozzle,casing_alloy,1296,1176,3630.0,4200.0,-451.9,451.9,-451.9,451.9,452.0,,,,,,
 nozzle_flaps_convergent,06 Nozzle,thermal_barrier,1776,1824,3640.0,3957.0,-428.0,428.0,-428.0,428.0,428.0,,,,,,
