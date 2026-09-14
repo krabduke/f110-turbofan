@@ -106,7 +106,10 @@ def main():
         "flow": flowpath(),
         "modules": mods, "parts": parts,
     }
-    path = os.path.join(ROOT, "viewer", "parts.json")
+    # argv[1] lets the drift check regenerate to a scratch file and
+    # compare, without touching the copy the viewer loads.
+    path = (sys.argv[1] if len(sys.argv) > 1
+            else os.path.join(ROOT, "viewer", "parts.json"))
     json.dump(out, open(path, "w"), indent=1)
     print(f"  -> {path}  ({len(parts)} parts, {len(mods)} modules)")
 
