@@ -346,14 +346,21 @@ import {DRACOLoader} from 'three/addons/loaders/DRACOLoader.js';
 import {animate, utils} from 'animejs';
 
 const MM = 0.001;
+
+// Anything inside named(...) is a claim that these are parts or groups in
+// viewer/parts.json, and tools/validate_viewer.mjs checks the claim. A
+// renamed part must not be able to go on quietly not matching.
+const named = (...n) => n;
+const matching = (...n) => n;
 const $ = s => document.querySelector(s);
 
 // Same shell set the Blender cutaway peels away: sectioning everything leaves
 // the far half of the casings occluding the core.
-const SHELL = ['casing_','flange_','inlet_case','inlet_lip','bypass_inner_wall',
-  'bypass_struts','augmentor_liner','combustor_liner_outer','nozzle_ext_flaps',
-  'nozzle_seals','nozzle_flaps_convergent','nozzle_flaps_divergent',
-  'turbine_blade_outer_air_seals','splitter','mixer'];
+const SHELL = matching('casing_','flange_','inlet_case','inlet_lip',
+  'bypass_inner_wall','bypass_struts','augmentor_liner',
+  'combustor_liner_outer','nozzle_ext_flaps','nozzle_seals',
+  'nozzle_flaps_convergent','nozzle_flaps_divergent',
+  'turbine_blade_outer_air_seals','splitter','mixer');
 const isShell = n => SHELL.some(p => n.includes(p));
 
 /* Which spool a part turns with, from the manifest.
