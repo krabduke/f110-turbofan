@@ -14,6 +14,14 @@ import _intersect
 # embedded in the case that holds them. Each entry is a deliberate statement
 # that the overlap is the assembly, not a mistake.
 EXPECTED = [
+    # The fan frame's struts and the outlet guide vanes are one piece of
+    # structure on a real engine -- the OGVs carry the frame load, which is
+    # why they are as thick as they are -- and the flow splitter divides that
+    # same row into its core and bypass halves.
+    ("fan_frame_struts", "vanes_fan_ogv"), ("splitter", "vanes_fan_ogv"),
+    # twenty nozzle stems tee off the manifold ring
+    ("fuel_manifold", "fuel_nozzles"),
+
     ("flange_", "casing_"),
     ("flange_", "inlet_case"),
     ("flange_", "nozzle_"),
