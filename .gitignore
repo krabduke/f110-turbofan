@@ -2,6 +2,9 @@
 __pycache__/
 *.pyc
 
+# Animation frames -- intermediate, re-rendered with make anim / make ignite
+renders/anim/
+
 # Build outputs. The decimated web GLB is committed so the viewer works from a
 # clone; the full-resolution GLB and the .blend are regenerated with `make`.
 build/*

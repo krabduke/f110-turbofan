@@ -2,7 +2,7 @@ BLENDER := /Applications/Blender.app/Contents/MacOS/Blender
 BLEND   := build/f110.blend
 SAMPLES ?= 128
 
-.PHONY: all build verify render turntable export web stl viewer clean
+.PHONY: all build verify render turntable anim ignite export web stl viewer clean
 
 all: build verify render export
 
@@ -26,6 +26,12 @@ render:
 
 turntable: 
 	$(BLENDER) -b $(BLEND) -P engine/render.py -- turntable 64
+
+anim:                        ## steady running loop -> renders/anim/
+	$(BLENDER) -b $(BLEND) -P engine/anim.py -- steady
+
+ignite:                      ## one-shot start-up -> renders/anim/
+	$(BLENDER) -b $(BLEND) -P engine/anim.py -- ignite
 
 export: 
 	$(BLENDER) -b $(BLEND) -P engine/export.py -- glb
