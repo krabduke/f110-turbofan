@@ -298,7 +298,7 @@
    "x0": -400.0,
    "x1": 1108.4,
    "parts": 12,
-   "faces": 269004
+   "faces": 280524
   },
   {
    "key": "02 HP Compressor",
@@ -308,7 +308,7 @@
    "x0": 728.2,
    "x1": 1539.6,
    "parts": 22,
-   "faces": 775728
+   "faces": 808560
   },
   {
    "key": "03 Combustor",
@@ -328,7 +328,7 @@
    "x0": 1499.2,
    "x1": 2490.0,
    "parts": 12,
-   "faces": 248172
+   "faces": 261036
   },
   {
    "key": "05 Augmentor",
@@ -358,7 +358,7 @@
    "x0": -420.0,
    "x1": 3661.0,
    "parts": 23,
-   "faces": 49940
+   "faces": 57284
   },
   {
    "key": "08 Shafts and Bearings",
@@ -677,7 +677,7 @@
    "mat": "casing_alloy",
    "x0": 580.0,
    "x1": 2520.0,
-   "f": 4608,
+   "f": 4896,
    "n": null,
    "spool": null,
    "spin": null
@@ -697,7 +697,7 @@
    "mat": "casing_alloy",
    "x0": 0.0,
    "x1": 580.0,
-   "f": 2880,
+   "f": 4176,
    "n": null,
    "spool": null,
    "spin": null
@@ -707,7 +707,7 @@
    "mat": "casing_alloy",
    "x0": 760.0,
    "x1": 1600.0,
-   "f": 2880,
+   "f": 7776,
    "n": null,
    "spool": null,
    "spin": null
@@ -727,7 +727,7 @@
    "mat": "hot_nickel",
    "x0": 1990.0,
    "x1": 2520.0,
-   "f": 2880,
+   "f": 3744,
    "n": null,
    "spool": null,
    "spin": null
@@ -887,7 +887,7 @@
    "mat": "composite",
    "x0": 613.4,
    "x1": 681.6,
-   "f": 49120,
+   "f": 52960,
    "n": null,
    "spool": null,
    "spin": null
@@ -897,7 +897,7 @@
    "mat": "titanium",
    "x0": 206.0,
    "x1": 299.0,
-   "f": 36840,
+   "f": 39720,
    "n": null,
    "spool": null,
    "spin": null
@@ -907,7 +907,7 @@
    "mat": "titanium",
    "x0": 437.8,
    "x1": 512.2,
-   "f": 44208,
+   "f": 47664,
    "n": null,
    "spool": null,
    "spin": null
@@ -917,7 +917,7 @@
    "mat": "steel",
    "x0": 854.0,
    "x1": 911.0,
-   "f": 31928,
+   "f": 34424,
    "n": null,
    "spool": null,
    "spin": null
@@ -927,7 +927,7 @@
    "mat": "steel",
    "x0": 972.6,
    "x1": 1023.4,
-   "f": 35612,
+   "f": 38396,
    "n": null,
    "spool": null,
    "spin": null
@@ -937,7 +937,7 @@
    "mat": "steel",
    "x0": 1078.2,
    "x1": 1124.0,
-   "f": 39296,
+   "f": 42368,
    "n": null,
    "spool": null,
    "spin": null
@@ -947,7 +947,7 @@
    "mat": "steel",
    "x0": 1173.5,
    "x1": 1214.5,
-   "f": 42980,
+   "f": 46340,
    "n": null,
    "spool": null,
    "spin": null
@@ -957,7 +957,7 @@
    "mat": "steel",
    "x0": 1259.7,
    "x1": 1295.7,
-   "f": 46664,
+   "f": 50312,
    "n": null,
    "spool": null,
    "spin": null
@@ -967,7 +967,7 @@
    "mat": "steel",
    "x0": 1335.7,
    "x1": 1367.9,
-   "f": 50348,
+   "f": 54284,
    "n": null,
    "spool": null,
    "spin": null
@@ -977,7 +977,7 @@
    "mat": "steel",
    "x0": 1403.3,
    "x1": 1431.9,
-   "f": 54032,
+   "f": 58256,
    "n": null,
    "spool": null,
    "spin": null
@@ -987,7 +987,7 @@
    "mat": "steel",
    "x0": 1463.6,
    "x1": 1488.4,
-   "f": 57716,
+   "f": 62228,
    "n": null,
    "spool": null,
    "spin": null
@@ -997,7 +997,7 @@
    "mat": "steel",
    "x0": 1517.2,
    "x1": 1539.6,
-   "f": 61400,
+   "f": 66200,
    "n": null,
    "spool": null,
    "spin": null
@@ -1007,7 +1007,7 @@
    "mat": "titanium",
    "x0": -98.4,
    "x1": -11.6,
-   "f": 17192,
+   "f": 18536,
    "n": null,
    "spool": null,
    "spin": null
@@ -1107,7 +1107,7 @@
    "mat": "hot_nickel",
    "x0": 1957.5,
    "x1": 2050.0,
-   "f": 8924,
+   "f": 11132,
    "n": "46",
    "spool": null,
    "spin": null
@@ -1147,7 +1147,7 @@
    "mat": "hot_nickel",
    "x0": 2134.5,
    "x1": 2191.5,
-   "f": 57722,
+   "f": 60698,
    "n": "62",
    "spool": null,
    "spin": null
@@ -1157,7 +1157,7 @@
    "mat": "hot_nickel",
    "x0": 2247.2,
    "x1": 2296.8,
-   "f": 42980,
+   "f": 46340,
    "n": null,
    "spool": null,
    "spin": null
@@ -1187,7 +1187,7 @@
    "mat": "hot_nickel",
    "x0": 2045.4,
    "x1": 2349.6,
-   "f": 1728,
+   "f": 6048,
    "n": null,
    "spool": null,
    "spin": null
@@ -1336,7 +1336,7 @@
    "m": "09 Accessories",
    "mat": "steel",
    "x0": -364.0,
-   "x1": 1181.2,
+   "x1": 1181.1,
    "f": 846,
    "n": null,
    "spool": null,

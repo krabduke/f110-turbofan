@@ -75,11 +75,23 @@ def main():
         got_tip = max(abs(f(r, k)) for k in
                       ("y_min_mm", "y_max_mm", "z_min_mm", "z_max_mm"))
         want_tip = max(row.r_tip_le, row.r_tip_te)
-        # rows carrying an outer band or tip shroud legitimately exceed the tip radius
-        extra = 12.0 if (not row.rotor) else (12.0 if row.shrouded else 2.5)
+        # A row reaches its annulus, and stops at the casing bore.
+        #
+        # This used to be an allowance -- 12 mm for anything carrying a band
+        # or a shroud -- which is not a statement about the engine, and it
+        # passed three shrouded turbine rows that were up to 16 mm THROUGH
+        # the turbine case. What a row may not do is stand outside the bore
+        # of the casing it runs in, so that is what is measured.
+        # Over the whole span the row's platforms cover, not just midspan:
+        # a band follows the bore, and through the compressor the bore at the
+        # front of a row is several millimetres above the bore at its middle.
+        cas = spec.enclosing_casing(row.x + row.chord * 0.5, want_tip)
+        xa, xb = row.x - row.chord * 0.14, row.x + row.chord * 1.14
+        bore = (max(spec.casing_inner(cas, xa + (xb - xa) * i / 8.0)
+                    for i in range(9)) if cas else want_tip + 12.0)
         c.true(f"{row.name} tip radius",
-               got_tip <= want_tip + extra + 1.0 and got_tip >= want_tip - 3.0,
-               f"{got_tip:.1f} mm (annulus {want_tip:.1f})")
+               got_tip <= bore + 0.5 and got_tip >= want_tip - 3.0,
+               f"{got_tip:.1f} mm (annulus {want_tip:.1f}, bore {bore:.1f})")
 
     print("\nCOMPLETENESS")
     c.true("object count", len(rows) >= 95, f"{len(rows)} objects")
