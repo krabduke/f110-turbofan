@@ -7,3 +7,7 @@ __pycache__/
 build/*
 !build/f110_web.glb
 !build/parts.csv
+
+# Stray browser screenshots -- these belong in a scratch directory
+*-tunnel-*.png
+page-*.png
