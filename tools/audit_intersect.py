@@ -14,6 +14,10 @@ import _intersect
 # embedded in the case that holds them. Each entry is a deliberate statement
 # that the overlap is the assembly, not a mistake.
 EXPECTED = [
+    # a spinner fairs over the fan disc and the roots of the blades bolted to
+    # it -- that is the whole of what it is for
+    ("spinner", "blades_fan_r1"), ("spinner", "fan_disc_assembly"),
+
     # The fan frame's struts and the outlet guide vanes are one piece of
     # structure on a real engine -- the OGVs carry the frame load, which is
     # why they are as thick as they are -- and the flow splitter divides that
