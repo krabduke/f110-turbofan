@@ -162,6 +162,13 @@ EXPECTED = [
     ("panel_bolts", "variable_vane_actuation"), ("panel_bolts", "casing_bypass"),
     ("borescope_ports", "bleed_pipes"),
     ("fan_frame_struts", "splitter"),   # the strut roots in the splitter nose
+    # Joints made while closing the circuits, each of which IS the joint:
+    # the fuel line onto its manifold, the ignition leads onto the igniter
+    # plugs, the convergent flaps hinged on the augmentor's aft flange, and
+    # the oil drop into the bearing sumps.
+    ("fuel_lines", "fuel_manifold"), ("ignition_exciters", "igniters"),
+    ("nozzle_flaps_convergent", "casing_augmentor"),
+    ("oil_lines", "bearing_sumps"),
 ]
 
 if __name__ == "__main__":

@@ -237,20 +237,33 @@ def main():
     rows = []
     n_bool = n_bool_ok = n_sharp = 0
 
+    # Every module is built before any object is made, and the cutters are
+    # pooled across all of them, so a `cut:` aimed at a part another module
+    # builds still reaches it. Reading each module's cutters out of its own
+    # build threw those away silently -- none is aimed across a boundary in
+    # this repo today, but the same code in rc-jet was dropping the one that
+    # cuts the intake aperture through the fuselage and no gate noticed.
+    all_built = []
+    cutters = {}
     for modname, module in MODULES:
-        t1 = time.time()
         built = module.build()
+        for key, geom in built.items():
+            if key.startswith("cut:"):
+                cutters.setdefault(key[4:], []).append(geom)
+        all_built.append((modname, module, built))
+
+    for modname, module, built in all_built:
+        t1 = time.time()
         arrays = getattr(module, "ARRAYS", {})
         objects = {k: v for k, v in built.items() if not k.startswith("cut:")}
-        cutters = {k[4:]: v for k, v in built.items() if k.startswith("cut:")}
 
         for name, (verts, faces) in sorted(objects.items()):
             cname = collection_for(name)
             obj = make_object(name, verts, faces, cols[cname])
 
-            if name in cutters:
+            for cut in cutters.get(name, ()):
                 n_bool += 1
-                if apply_cutters(obj, *cutters[name]):
+                if apply_cutters(obj, *cut):
                     n_bool_ok += 1
             if name in arrays:
                 array_rotational(obj, arrays[name])

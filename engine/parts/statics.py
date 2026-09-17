@@ -249,8 +249,12 @@ def _mount_pads():
             a = math.radians(ang)
             cr = _casing_outer(x)
             pv, pf = mesh.revolve_closed(
-                [(-2.0, 6.0), (14.0, 6.0), (14.0, 30.0), (22.0, 30.0),
-                 (22.0, 38.0), (-2.0, 38.0)], segments=20)
+                # 96 mm proud of the casing, not 22. The trunnion it carries
+                # is a yoke whose inner jaw does not begin until r 674, and
+                # the pad stopped at 604 -- so the engine's forward mount was
+                # a pad and a trunnion that never touched each other.
+                [(-2.0, 6.0), (14.0, 6.0), (14.0, 30.0), (96.0, 30.0),
+                 (96.0, 38.0), (-2.0, 38.0)], segments=20)
             pv = mesh.rot_x(mesh.rot_z(pv, math.pi / 2), a)
             pt = (x, cr * math.cos(a), cr * math.sin(a))
             pads.append((mesh.translate(pv, pt[0], pt[1], pt[2]), pf))
