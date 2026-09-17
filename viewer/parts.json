@@ -297,8 +297,8 @@
    "kind": "gas",
    "x0": -400.0,
    "x1": 1108.4,
-   "parts": 12,
-   "faces": 280524
+   "parts": 18,
+   "faces": 307272
   },
   {
    "key": "02 HP Compressor",
@@ -308,7 +308,7 @@
    "x0": 728.2,
    "x1": 1539.6,
    "parts": 22,
-   "faces": 808560
+   "faces": 848178
   },
   {
    "key": "03 Combustor",
@@ -328,7 +328,7 @@
    "x0": 1499.2,
    "x1": 2490.0,
    "parts": 12,
-   "faces": 261036
+   "faces": 261108
   },
   {
    "key": "05 Augmentor",
@@ -348,7 +348,7 @@
    "x0": 3317.0,
    "x1": 4210.0,
    "parts": 7,
-   "faces": 8148
+   "faces": 22836
   },
   {
    "key": "07 Casings and Frames",
@@ -358,7 +358,7 @@
    "x0": -420.0,
    "x1": 3661.0,
    "parts": 23,
-   "faces": 57284
+   "faces": 70724
   },
   {
    "key": "08 Shafts and Bearings",
@@ -366,7 +366,7 @@
    "color": "#7D7E78",
    "kind": "struct",
    "x0": -140.0,
-   "x1": 2429.0,
+   "x1": 2496.0,
    "parts": 7,
    "faces": 21436
   },
@@ -377,8 +377,8 @@
    "kind": "struct",
    "x0": -364.0,
    "x1": 3528.0,
-   "parts": 22,
-   "faces": 18600
+   "parts": 25,
+   "faces": 19082
   }
  ],
  "parts": {
@@ -387,7 +387,7 @@
    "mat": "titanium",
    "x0": 3.5,
    "x1": 201.5,
-   "f": 18816,
+   "f": 21088,
    "n": null,
    "spool": "lp",
    "spin": 1.0
@@ -397,7 +397,7 @@
    "mat": "titanium",
    "x0": 298.5,
    "x1": 436.5,
-   "f": 25872,
+   "f": 28996,
    "n": null,
    "spool": "lp",
    "spin": 1.0
@@ -407,7 +407,7 @@
    "mat": "titanium",
    "x0": 511.0,
    "x1": 619.0,
-   "f": 30576,
+   "f": 34268,
    "n": null,
    "spool": "lp",
    "spin": 1.0
@@ -417,7 +417,7 @@
    "mat": "titanium",
    "x0": 781.0,
    "x1": 860.2,
-   "f": 22344,
+   "f": 25042,
    "n": null,
    "spool": "hp",
    "spin": -1.0
@@ -427,7 +427,7 @@
    "mat": "titanium",
    "x0": 907.2,
    "x1": 976.8,
-   "f": 25872,
+   "f": 28996,
    "n": null,
    "spool": "hp",
    "spin": -1.0
@@ -437,7 +437,7 @@
    "mat": "titanium",
    "x0": 1020.3,
    "x1": 1081.5,
-   "f": 29400,
+   "f": 32950,
    "n": null,
    "spool": "hp",
    "spin": -1.0
@@ -447,7 +447,7 @@
    "mat": "titanium",
    "x0": 1122.3,
    "x1": 1176.3,
-   "f": 32928,
+   "f": 36904,
    "n": null,
    "spool": "hp",
    "spin": -1.0
@@ -457,7 +457,7 @@
    "mat": "titanium",
    "x0": 1213.1,
    "x1": 1261.1,
-   "f": 36456,
+   "f": 40858,
    "n": null,
    "spool": "hp",
    "spin": -1.0
@@ -467,7 +467,7 @@
    "mat": "titanium",
    "x0": 1294.7,
    "x1": 1336.7,
-   "f": 39984,
+   "f": 44812,
    "n": null,
    "spool": "hp",
    "spin": -1.0
@@ -477,7 +477,7 @@
    "mat": "titanium",
    "x0": 1367.0,
    "x1": 1404.2,
-   "f": 43512,
+   "f": 48766,
    "n": null,
    "spool": "hp",
    "spin": -1.0
@@ -487,7 +487,7 @@
    "mat": "titanium",
    "x0": 1431.9,
    "x1": 1464.3,
-   "f": 47040,
+   "f": 52720,
    "n": null,
    "spool": "hp",
    "spin": -1.0
@@ -497,7 +497,7 @@
    "mat": "titanium",
    "x0": 1488.4,
    "x1": 1517.2,
-   "f": 50568,
+   "f": 56674,
    "n": null,
    "spool": "hp",
    "spin": -1.0
@@ -557,7 +557,7 @@
    "mat": "titanium",
    "x0": -120.0,
    "x1": 612.8,
-   "f": 4032,
+   "f": 21248,
    "n": null,
    "spool": "lp",
    "spin": 1.0
@@ -626,7 +626,7 @@
    "m": "08 Shafts and Bearings",
    "mat": "steel",
    "x0": -140.0,
-   "x1": 2420.0,
+   "x1": 2496.0,
    "f": 2016,
    "n": null,
    "spool": "lp",
@@ -641,6 +641,16 @@
    "n": null,
    "spool": "lp",
    "spin": 1.0
+  },
+  "borescope_bosses": {
+   "m": "09 Accessories",
+   "mat": "casing_alloy",
+   "x0": 876.0,
+   "x1": 2404.0,
+   "f": 672,
+   "n": null,
+   "spool": null,
+   "spin": null
   },
   "bypass_inner_wall": {
    "m": "07 Casings and Frames",
@@ -757,7 +767,7 @@
    "mat": "casing_alloy",
    "x0": 3630.0,
    "x1": 3661.0,
-   "f": 2064,
+   "f": 3744,
    "n": null,
    "spool": null,
    "spin": null
@@ -767,7 +777,7 @@
    "mat": "casing_alloy",
    "x0": 1977.0,
    "x1": 2017.3,
-   "f": 2304,
+   "f": 4224,
    "n": null,
    "spool": null,
    "spin": null
@@ -777,7 +787,7 @@
    "mat": "casing_alloy",
    "x0": 569.0,
    "x1": 603.1,
-   "f": 2544,
+   "f": 4704,
    "n": null,
    "spool": null,
    "spin": null
@@ -787,7 +797,7 @@
    "mat": "casing_alloy",
    "x0": 1522.0,
    "x1": 1559.2,
-   "f": 2184,
+   "f": 3984,
    "n": null,
    "spool": null,
    "spin": null
@@ -797,7 +807,7 @@
    "mat": "casing_alloy",
    "x0": 750.0,
    "x1": 781.0,
-   "f": 2184,
+   "f": 3984,
    "n": null,
    "spool": null,
    "spin": null
@@ -807,7 +817,7 @@
    "mat": "casing_alloy",
    "x0": -10.0,
    "x1": 21.0,
-   "f": 2544,
+   "f": 4704,
    "n": null,
    "spool": null,
    "spin": null
@@ -817,7 +827,7 @@
    "mat": "casing_alloy",
    "x0": 2508.0,
    "x1": 2545.2,
-   "f": 2304,
+   "f": 4224,
    "n": null,
    "spool": null,
    "spin": null
@@ -838,6 +848,16 @@
    "x0": -420.0,
    "x1": -368.0,
    "f": 2448,
+   "n": null,
+   "spool": null,
+   "spin": null
+  },
+  "mount_pads": {
+   "m": "09 Accessories",
+   "mat": "steel",
+   "x0": 662.0,
+   "x1": 2558.0,
+   "f": 480,
    "n": null,
    "spool": null,
    "spin": null
@@ -1275,9 +1295,9 @@
   "nozzle_ext_flaps": {
    "m": "06 Nozzle",
    "mat": "casing_alloy",
-   "x0": 3630.0,
-   "x1": 4200.0,
-   "f": 1176,
+   "x0": 3644.0,
+   "x1": 4194.0,
+   "f": 9096,
    "n": null,
    "spool": null,
    "spin": null
@@ -1287,7 +1307,7 @@
    "mat": "thermal_barrier",
    "x0": 3640.0,
    "x1": 3957.0,
-   "f": 1824,
+   "f": 2592,
    "n": null,
    "spool": null,
    "spin": null
@@ -1297,7 +1317,7 @@
    "mat": "thermal_barrier",
    "x0": 3940.0,
    "x1": 4210.0,
-   "f": 984,
+   "f": 1752,
    "n": null,
    "spool": null,
    "spin": null
@@ -1305,9 +1325,9 @@
   "nozzle_links": {
    "m": "06 Nozzle",
    "mat": "steel",
-   "x0": 3590.6,
-   "x1": 3739.4,
-   "f": 144,
+   "x0": 3590.1,
+   "x1": 3869.0,
+   "f": 1104,
    "n": null,
    "spool": null,
    "spin": null
@@ -1317,7 +1337,7 @@
    "mat": "thermal_barrier",
    "x0": 3640.0,
    "x1": 4210.0,
-   "f": 1008,
+   "f": 5280,
    "n": null,
    "spool": null,
    "spin": null
@@ -1357,7 +1377,7 @@
    "mat": "casing_alloy",
    "x0": 817.4,
    "x1": 1565.6,
-   "f": 714,
+   "f": 798,
    "n": null,
    "spool": null,
    "spin": null
@@ -1415,9 +1435,9 @@
   "fuel_lines": {
    "m": "09 Accessories",
    "mat": "steel",
-   "x0": 901.3,
-   "x1": 1580.6,
-   "f": 1576,
+   "x0": 559.3,
+   "x1": 1582.2,
+   "f": 416,
    "n": null,
    "spool": null,
    "spin": null
@@ -1425,9 +1445,39 @@
   "gearbox": {
    "m": "09 Accessories",
    "mat": "casing_alloy",
-   "x0": 860.0,
-   "x1": 1351.3,
+   "x0": 290.0,
+   "x1": 781.3,
    "f": 1626,
+   "n": null,
+   "spool": null,
+   "spin": null
+  },
+  "gearbox_mounts": {
+   "m": "09 Accessories",
+   "mat": "casing_alloy",
+   "x0": 331.4,
+   "x1": 708.6,
+   "f": 64,
+   "n": null,
+   "spool": null,
+   "spin": null
+  },
+  "generator_1": {
+   "m": "01 Inlet and Fan",
+   "mat": "casing_alloy",
+   "x0": 327.2,
+   "x1": 455.2,
+   "f": 74,
+   "n": null,
+   "spool": null,
+   "spin": null
+  },
+  "generator_2": {
+   "m": "01 Inlet and Fan",
+   "mat": "casing_alloy",
+   "x0": 571.0,
+   "x1": 699.0,
+   "f": 74,
    "n": null,
    "spool": null,
    "spin": null
@@ -1437,7 +1487,7 @@
    "mat": "rubber",
    "x0": 52.0,
    "x1": 3528.0,
-   "f": 576,
+   "f": 690,
    "n": null,
    "spool": null,
    "spin": null
@@ -1452,12 +1502,32 @@
    "spool": null,
    "spin": null
   },
+  "hydraulic_pump_1": {
+   "m": "01 Inlet and Fan",
+   "mat": "casing_alloy",
+   "x0": 359.0,
+   "x1": 451.0,
+   "f": 74,
+   "n": null,
+   "spool": null,
+   "spin": null
+  },
+  "hydraulic_pump_2": {
+   "m": "01 Inlet and Fan",
+   "mat": "casing_alloy",
+   "x0": 589.0,
+   "x1": 681.0,
+   "f": 74,
+   "n": null,
+   "spool": null,
+   "spin": null
+  },
   "ignition_exciters": {
    "m": "09 Accessories",
    "mat": "steel",
    "x0": 470.0,
-   "x1": 1760.7,
-   "f": 424,
+   "x1": 1766.0,
+   "f": 452,
    "n": null,
    "spool": null,
    "spin": null
@@ -1485,9 +1555,29 @@
   "oil_lines": {
    "m": "09 Accessories",
    "mat": "steel",
-   "x0": 659.6,
+   "x0": 439.7,
    "x1": 2520.4,
-   "f": 582,
+   "f": 782,
+   "n": null,
+   "spool": null,
+   "spin": null
+  },
+  "oil_pressure_pump": {
+   "m": "01 Inlet and Fan",
+   "mat": "casing_alloy",
+   "x0": 423.8,
+   "x1": 505.8,
+   "f": 74,
+   "n": null,
+   "spool": null,
+   "spin": null
+  },
+  "oil_scavenge_pump": {
+   "m": "01 Inlet and Fan",
+   "mat": "casing_alloy",
+   "x0": 556.8,
+   "x1": 648.8,
+   "f": 74,
    "n": null,
    "spool": null,
    "spin": null
@@ -1537,7 +1627,7 @@
    "mat": "steel",
    "x0": 1499.2,
    "x1": 2360.8,
-   "f": 2690,
+   "f": 2762,
    "n": null,
    "spool": null,
    "spin": null
