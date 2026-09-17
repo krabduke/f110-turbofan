@@ -9,7 +9,8 @@ import spec
 import mesh
 
 SEG = spec.RES["revolve_segments"]
-A = spec.ACCESSORIES
+A = dict(spec.ACCESSORIES, gearbox_x=290.0, gearbox_r=660.0,
+         gearbox_height=110.0)
 
 
 def build():
@@ -19,6 +20,7 @@ def build():
     out.update(_plumbing())
     out.update(_case_detail())
     out.update(_systems())
+    out.update(_accessory_drives())
     return out
 
 
@@ -196,6 +198,97 @@ def _case_detail():
     return out
 
 
+def _accessory_drives():
+    cx = A["gearbox_x"] + A["gearbox_len"] / 2.0
+    center = _at(A["gearbox_r"], A["gearbox_angle"], cx)
+    out = {}
+    mounts = []
+    for dx in (-0.36, 0.36):
+        x = cx + dx * A["gearbox_len"]
+        for dy in (-0.32, 0.32):
+            p = (x, center[1] + dy * A["gearbox_width"],
+                 center[2] + A["gearbox_height"] / 2.0 - 4.0)
+            clock = math.degrees(math.atan2(p[2], p[1]))
+            q = _at(_casing_radius(x) + 8.0, clock, x)
+            mounts.extend([_case_boss(x, clock, radius=23.0),
+                           _fitting(p, q, 16.0)])
+    out["gearbox_mounts"] = mesh.join(*mounts)
+    for name, fraction, radius, length in (
+            ("generator_1", -0.28, 52.0, 154.0),
+            ("generator_2", 0.25, 52.0, 154.0),
+            ("hydraulic_pump_1", -0.25, 34.0, 106.0),
+            ("hydraulic_pump_2", 0.25, 34.0, 106.0),
+            ("oil_pressure_pump", -0.12, 29.0, 86.0),
+            ("oil_scavenge_pump", 0.18, 34.0, 96.0)):
+        x = cx + fraction * A["gearbox_len"]
+        if name.startswith("generator"):
+            base = (x, center[1] + A["gearbox_width"] / 2.0 - 3.0, center[2])
+            axis = (0.0, 1.0, 0.0)
+        else:
+            y = center[1] + (0.24 if name.startswith("oil") else -0.24) * A["gearbox_width"]
+            base = (x, y, center[2] - A["gearbox_height"] / 2.0 + 3.0)
+            axis = (0.0, 0.0, -1.0)
+        def point(t):
+            return tuple(base[k] + axis[k] * t for k in range(3))
+        pieces = [_fitting(point(0.0), point(14.0), radius + 12.0),
+                  mesh.pipe([point(10.0), point(length)], radius, segments=24),
+                  _fitting(point(length - 4.0), point(length + 12.0), radius * 0.55)]
+        for t in (24.0, 42.0, 60.0, 78.0):
+            pieces.append(_fitting(point(t), point(t + 5.0), radius + 4.0))
+        out[name] = mesh.join(*pieces)
+    return out
+
+
+def _fitting(p0, p1, radius):
+    return mesh.pipe([p0, p1], radius, segments=6)
+
+
+def _case_boss(x, clock, height=14.0, radius=15.0):
+    r = _casing_radius(x)
+    return _fitting(_at(r - 2.0, clock, x),
+                    _at(r + height, clock, x), radius)
+
+
+def _supported_line(path, radius, clock=None, spacing=3):
+    pieces = [mesh.pipe(path, radius, segments=12)]
+    for i in range(1, len(path) - 1, spacing):
+        p = path[i]
+        x = p[0]
+        r = math.hypot(p[1], p[2])
+        angle = math.degrees(math.atan2(p[2], p[1]))
+        pieces.append(_case_boss(x, angle, radius=radius + 8.0))
+        pieces.append(_fitting(_at(_casing_radius(x) + 10.0, angle, x),
+                               _at(r - radius + 2.0, angle, x), 5.0))
+        cv, cf = mesh.tube(-5.0, 5.0, radius * 0.94, radius + 3.0, 16)
+        tangent = tuple(path[i + 1][k] - path[i - 1][k] for k in range(3))
+        length = math.sqrt(sum(t * t for t in tangent))
+        ux, uy, uz = (t / length for t in tangent)
+        yaw = math.atan2(uy, ux)
+        pitch = math.atan2(uz, math.hypot(ux, uy))
+        cv = [(t * math.cos(pitch) - v * math.sin(pitch), u,
+               t * math.sin(pitch) + v * math.cos(pitch)) for t, u, v in cv]
+        cv = mesh.rot_z(cv, yaw)
+        pieces.append((mesh.translate(cv, *p), cf))
+    for p, q in ((path[0], path[1]), (path[-1], path[-2])):
+        length = math.dist(p, q)
+        end = tuple(p[k] + (q[k] - p[k]) * min(14.0 / length, 0.4)
+                    for k in range(3))
+        pieces.append(_fitting(p, end, radius + 4.0))
+    return pieces
+
+
+def _case_line(clock, x0, x1, standoff, radius, start=None, end=None):
+    path = _route(clock, x0, x1, standoff,
+                  n=max(4, int(abs(x1 - x0) / 80.0)))
+    path.insert(0, start if start is not None else _at(_casing_radius(x0), clock, x0))
+    path.append(end if end is not None else _at(_casing_radius(x1), clock, x1))
+    pieces = _supported_line(path, radius)
+    for x, endpoint in ((x0, start), (x1, end)):
+        if endpoint is None:
+            pieces.append(_case_boss(x, clock, radius=radius + 9.0))
+    return pieces
+
+
 def _at(radius, clock_deg, x, extra_r=0.0):
     a = math.radians(clock_deg)
     r = radius + extra_r
@@ -328,18 +421,6 @@ def _plumbing():
     out = {}
 
     fuel = []
-    for i, clock in enumerate((-58.0, -122.0, -74.0, -106.0)):
-        x0 = A["gearbox_x"] + 60.0
-        x1 = spec.COMBUSTOR["x_front"] - 40.0
-        path = _route(clock, x0, x1, 34.0 + i * 15.0)
-        fuel.append(mesh.pipe(path, A["fuel_line_r"], 12))
-        for j in range(0, len(path), 5):      # support clamps
-            cv, cf = mesh.cylinder(-9.0, 9.0, A["fuel_line_r"] * 1.7, 10)
-            cv = mesh.rot_z(cv, math.pi / 2)
-            ang = math.atan2(path[j][2], path[j][1])
-            cv = mesh.rot_x(cv, ang)
-            cv = mesh.translate(cv, path[j][0], path[j][1], path[j][2])
-            fuel.append((cv, cf))
     out["fuel_lines"] = mesh.join(*fuel)
 
     oil = []

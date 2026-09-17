@@ -190,13 +190,16 @@ def _variable_geometry():
     parts = []
     for row in variable_rows:
         r_tip = max(row.r_tip_le, row.r_tip_te)
-        ring_r = r_tip + 34.0
+        case_r = max((spec.casing_inner(name, row.x + row.chord * 0.4) + wall
+                      for name, x0, x1, r0, r1, wall in spec.CASINGS
+                      if x0 <= row.x + row.chord * 0.4 <= x1), default=r_tip)
+        ring_r = max(r_tip, case_r) + 34.0
         parts.append(mesh.ring_torus(row.x + row.chord * 0.4, ring_r, 11.0, SEG, 12))
 
         # one spindle + lever per vane
         lever = []
         sp_v, sp_f = mesh.cylinder(0.0, 40.0, 7.0, 12)
-        sp_v = mesh.rot_z(sp_v, -math.pi / 2)
+        sp_v = mesh.rot_z(sp_v, math.pi / 2)
         sp_v = mesh.translate(sp_v, row.x + row.chord * 0.4, r_tip + 2.0, 0.0)
         lever.append((sp_v, sp_f))
         lv, lf = mesh.box(row.x + row.chord * 0.4, r_tip + 30.0, 14.0,
