@@ -21,6 +21,8 @@ def build():
     out.update(_bypass_duct())
     out.update(_frames())
     out.update(_variable_geometry())
+    out.update(_borescope_bosses())
+    out.update(_mount_pads())
     return out
 
 
@@ -44,11 +46,22 @@ def _casings():
     return out
 
 
+def _casing_outer(x):
+    for (name, x0, x1, r0, r1, wall) in spec.CASINGS:
+        if x0 <= x <= x1:
+            return spec.casing_inner(name, x) + wall
+    return 300.0
+
+
 def _flanges():
     out = {}
     for (name, x, r_in, r_out, thick, bolts) in spec.FLANGES:
-        out[name] = mesh.flange(x, r_in, r_out, thick, bolts,
-                                bolt_r=(r_out - r_in) * 0.26)
+        ring = mesh.tube(x - thick / 2, x + thick / 2, r_in, r_out, 96)
+        bolt_r = (r_out - r_in) * 0.26
+        pitch = (r_in + r_out) / 2 + (r_out - r_in) * 0.18
+        fwd = mesh.bolt_ring(x - thick / 2, pitch, bolts, bolt_r, thick * 0.55)
+        aft = mesh.bolt_ring(x + thick / 2, pitch, bolts, bolt_r, thick * 0.55)
+        out[name] = mesh.join(ring, fwd, aft)
     return out
 
 
@@ -210,3 +223,35 @@ def _variable_geometry():
 
     out["variable_vane_actuation"] = mesh.join(*parts)
     return out
+
+
+def _borescope_bosses():
+    pieces = []
+    for (bx, ang) in ((900.0, 42.0), (1080.0, -42.0), (1260.0, 42.0),
+                      (1440.0, -42.0), (2060.0, 34.0), (2240.0, -34.0),
+                      (2380.0, 34.0)):
+        cr = _casing_outer(bx)
+        bv, bf = mesh.revolve_closed(
+            [(-5.0, 6.0), (8.0, 6.0), (8.0, 18.0), (14.0, 18.0),
+             (14.0, 24.0), (-5.0, 24.0)], segments=16)
+        bv = mesh.rot_x(mesh.rot_z(bv, math.pi / 2), math.radians(ang))
+        a = math.radians(ang)
+        pt = (bx, cr * math.cos(a), cr * math.sin(a))
+        pieces.append((mesh.translate(bv, pt[0], pt[1], pt[2]), bf))
+    return {"borescope_bosses": mesh.join(*pieces)}
+
+
+def _mount_pads():
+    pads = []
+    for x in (spec.ACCESSORIES["mount_fwd_x"], spec.ACCESSORIES["mount_aft_x"]):
+        pad_r = spec.ACCESSORIES["mount_pad_r"] if x < 1000 else 480.0
+        for ang in (55.0, 125.0):
+            a = math.radians(ang)
+            cr = _casing_outer(x)
+            pv, pf = mesh.revolve_closed(
+                [(-2.0, 6.0), (14.0, 6.0), (14.0, 30.0), (22.0, 30.0),
+                 (22.0, 38.0), (-2.0, 38.0)], segments=20)
+            pv = mesh.rot_x(mesh.rot_z(pv, math.pi / 2), a)
+            pt = (x, cr * math.cos(a), cr * math.sin(a))
+            pads.append((mesh.translate(pv, pt[0], pt[1], pt[2]), pf))
+    return {"mount_pads": mesh.join(*pads)}
