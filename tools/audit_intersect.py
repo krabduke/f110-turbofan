@@ -40,6 +40,9 @@ EXPECTED = [
     # member built as two parts -- hub to core casing, core casing to fan
     # case -- so they meet at the casing between them.
     ("fan_frame_struts", "bypass_struts"),
+    # the T5 rake's harness ring collects eight thermocouple leads and hands
+    # them to the engine loom, which is what a harness ring is for
+    ("harnesses", "t5_harness"),
     # a spinner fairs over the fan disc and the roots of the blades bolted to
     # it -- that is the whole of what it is for
     ("spinner", "blades_fan_r1"), ("spinner", "fan_disc_assembly"),

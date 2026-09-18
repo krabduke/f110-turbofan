@@ -109,7 +109,7 @@ gearbox,09 Accessories,casing_alloy,1518,1626,290.0,781.3,-290.0,140.0,-764.9,-5
 gearbox_mounts,09 Accessories,casing_alloy,320,176,331.4,708.6,-111.8,111.8,-611.3,-569.9,615.8,,,,,,
 generator_1,01 Inlet and Fan,casing_alloy,728,404,327.2,472.2,137.0,303.0,-724.0,-596.0,769.2,,,,,,
 generator_2,01 Inlet and Fan,casing_alloy,728,404,571.0,716.0,137.0,303.0,-724.0,-596.0,769.2,,,,,,
-harnesses,09 Accessories,rubber,760,690,52.0,3528.0,-558.8,234.2,395.9,650.0,735.6,,,,,,
+harnesses,09 Accessories,rubber,760,690,52.0,3528.0,-558.8,226.0,395.9,638.1,735.6,,,,,,
 heat_exchanger,09 Accessories,steel,728,724,295.0,617.0,250.8,667.6,-616.3,-113.2,723.0,,,,,,
 hydraulic_pump_1,01 Inlet and Fan,casing_alloy,400,230,339.0,451.0,-133.2,-21.2,-830.0,-712.0,834.4,,,,,,
 hydraulic_pump_2,01 Inlet and Fan,casing_alloy,400,230,569.0,681.0,-133.2,-21.2,-830.0,-712.0,834.4,,,,,,

@@ -560,9 +560,17 @@ def _plumbing():
 
     # ---- electrical ------------------------------------------------------
     harness = []
-    for i, clock in enumerate((84.0, 96.0, 70.0)):
+    # Three trunks side by side at one standoff, not stacked on top of each
+    # other at 26, 38 and 50. A loom is clipped round the casing, not piled
+    # up off it: at 50 plus a clamp box the outer trunk stood 66 mm proud of
+    # the augmentor case, and in the airframe that vendors this engine it was
+    # the widest thing on the installation -- 0.1 mm from the fuselage's
+    # inner surface, where the aircraft asks for half a millimetre. They are
+    # 12 to 14 degrees apart in clock, which is 120 mm of separation at this
+    # radius.
+    for i, clock in enumerate((70.0, 84.0, 96.0)):
         path = _route(clock, spec.STATION["fan_face"] + 60.0,
-                      spec.STATION["augmentor_exit"] - 120.0, 26.0 + i * 12.0)
+                      spec.STATION["augmentor_exit"] - 120.0, 26.0)
         harness.append(mesh.pipe(path, A["harness_r"], 10))
         for j in range(0, len(path), 4):
             bv, bf = mesh.box(path[j][0], path[j][1], path[j][2], 16.0, 20.0, 20.0)
