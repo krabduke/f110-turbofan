@@ -14,6 +14,32 @@ import _intersect
 # embedded in the case that holds them. Each entry is a deliberate statement
 # that the overlap is the assembly, not a mistake.
 EXPECTED = [
+    # ----------------------------------------------------------------
+    # The accessory gearbox, joint by joint. Every unit on it -- both
+    # generators, both hydraulic pumps, the pressure pump and the scavenge
+    # pump -- is bolted to its drive pad through a flange, the gearbox is
+    # held to the fan case by its own mounts, and the oil lines run into the
+    # pumps and the generator they serve. Each of these overlaps is that
+    # fitting. They grew when the accessories stopped being hexagons and got
+    # the bolted pads they hang on.
+    # ----------------------------------------------------------------
+    ("generator_", "gearbox"), ("hydraulic_pump_", "gearbox"),
+    ("oil_pressure_pump", "gearbox"), ("oil_scavenge_pump", "gearbox"),
+    ("gearbox_mounts", "gearbox"), ("gearbox_mounts", "casing_fan"),
+    ("gearbox", "casing_fan"),
+    ("oil_lines", "oil_scavenge_pump"), ("oil_lines", "oil_pressure_pump"),
+    ("oil_lines", "generator_"), ("oil_lines", "hydraulic_pump_"),
+    # A borescope boss is let into the case and carries the port that
+    # threads into it; the aft mount pad bolts to the turbine rear flange;
+    # and the fan cowl door passes over the forward mount pad, which is
+    # what the hole in a cowl door is for.
+    ("borescope_bosses", "casing_bypass"),
+    ("borescope_bosses", "borescope_ports"),
+    ("mount_pads", "flange_turb_aft"), ("mount_pads", "fan_cowl_door"),
+    # A fan frame strut and the bypass strut outboard of it are one radial
+    # member built as two parts -- hub to core casing, core casing to fan
+    # case -- so they meet at the casing between them.
+    ("fan_frame_struts", "bypass_struts"),
     # a spinner fairs over the fan disc and the roots of the blades bolted to
     # it -- that is the whole of what it is for
     ("spinner", "blades_fan_r1"), ("spinner", "fan_disc_assembly"),

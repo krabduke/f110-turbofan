@@ -378,7 +378,7 @@
    "x0": -364.0,
    "x1": 3528.0,
    "parts": 25,
-   "faces": 19194
+   "faces": 19008
   }
  ],
  "parts": {
@@ -715,7 +715,7 @@
   "casing_hpc": {
    "m": "07 Casings and Frames",
    "mat": "casing_alloy",
-   "x0": 760.0,
+   "x0": 714.0,
    "x1": 1600.0,
    "f": 7776,
    "n": null,
@@ -755,8 +755,8 @@
   "fan_frame_struts": {
    "m": "07 Casings and Frames",
    "mat": "casing_alloy",
-   "x0": 640.0,
-   "x1": 790.0,
+   "x0": 628.0,
+   "x1": 718.0,
    "f": 656,
    "n": null,
    "spool": null,
@@ -1637,7 +1637,7 @@
    "mat": "casing_alloy",
    "x0": 646.0,
    "x1": 767.0,
-   "f": 1152,
+   "f": 966,
    "n": null,
    "spool": null,
    "spin": null
