@@ -298,7 +298,7 @@
    "x0": -400.0,
    "x1": 1108.4,
    "parts": 18,
-   "faces": 307272
+   "faces": 308812
   },
   {
    "key": "02 HP Compressor",
@@ -378,7 +378,7 @@
    "x0": -364.0,
    "x1": 3528.0,
    "parts": 25,
-   "faces": 19082
+   "faces": 19194
   }
  ],
  "parts": {
@@ -557,7 +557,7 @@
    "mat": "titanium",
    "x0": -120.0,
    "x1": 612.8,
-   "f": 21248,
+   "f": 21504,
    "n": null,
    "spool": "lp",
    "spin": 1.0
@@ -1457,7 +1457,7 @@
    "mat": "casing_alloy",
    "x0": 331.4,
    "x1": 708.6,
-   "f": 64,
+   "f": 176,
    "n": null,
    "spool": null,
    "spin": null
@@ -1466,8 +1466,8 @@
    "m": "01 Inlet and Fan",
    "mat": "casing_alloy",
    "x0": 327.2,
-   "x1": 455.2,
-   "f": 74,
+   "x1": 472.2,
+   "f": 404,
    "n": null,
    "spool": null,
    "spin": null
@@ -1476,8 +1476,8 @@
    "m": "01 Inlet and Fan",
    "mat": "casing_alloy",
    "x0": 571.0,
-   "x1": 699.0,
-   "f": 74,
+   "x1": 716.0,
+   "f": 404,
    "n": null,
    "spool": null,
    "spin": null
@@ -1505,9 +1505,9 @@
   "hydraulic_pump_1": {
    "m": "01 Inlet and Fan",
    "mat": "casing_alloy",
-   "x0": 359.0,
+   "x0": 339.0,
    "x1": 451.0,
-   "f": 74,
+   "f": 230,
    "n": null,
    "spool": null,
    "spin": null
@@ -1515,9 +1515,9 @@
   "hydraulic_pump_2": {
    "m": "01 Inlet and Fan",
    "mat": "casing_alloy",
-   "x0": 589.0,
+   "x0": 569.0,
    "x1": 681.0,
-   "f": 74,
+   "f": 230,
    "n": null,
    "spool": null,
    "spin": null
@@ -1565,9 +1565,9 @@
   "oil_pressure_pump": {
    "m": "01 Inlet and Fan",
    "mat": "casing_alloy",
-   "x0": 423.8,
+   "x0": 403.8,
    "x1": 505.8,
-   "f": 74,
+   "f": 230,
    "n": null,
    "spool": null,
    "spin": null
@@ -1575,9 +1575,9 @@
   "oil_scavenge_pump": {
    "m": "01 Inlet and Fan",
    "mat": "casing_alloy",
-   "x0": 556.8,
+   "x0": 536.8,
    "x1": 648.8,
-   "f": 74,
+   "f": 230,
    "n": null,
    "spool": null,
    "spin": null
