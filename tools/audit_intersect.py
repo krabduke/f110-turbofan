@@ -1,6 +1,21 @@
 """No part of the engine may occupy another part's space.
 
-    python3 tools/audit_intersect.py
+    python3 tools/audit_intersect.py            (runs itself under Blender)
+    python3 tools/audit_intersect.py --shrink   (after a fix: drop what is fixed)
+
+Every pair of parts whose material overlaps by TOL or more -- measured
+exactly, both ways, buried parts included; see tools/_interfere.py -- must be
+one of two things:
+
+*   Declared in EXPECTED: meant to be that way, a pin in its bore, a rib inside
+    a closed skin. A rule that excuses nothing, or names a part that does not
+    exist, fails the audit. A permission that no longer matches anything is a
+    hole a regression can fall into unseen, and the list had grown to more
+    dead rules than live ones before this was enforced.
+*   On the KNOWN list: a real defect, written down with how deep it is and
+    where it is. The list only gets shorter. A pair not on it fails, a pair
+    that gets deeper fails, and a pair that has been fixed fails until
+    --shrink takes it off. --shrink never adds anything.
 """
 import os, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -28,7 +43,7 @@ EXPECTED = [
     ("gearbox_mounts", "gearbox"), ("gearbox_mounts", "casing_fan"),
     ("gearbox", "casing_fan"),
     ("oil_lines", "oil_scavenge_pump"), ("oil_lines", "oil_pressure_pump"),
-    ("oil_lines", "generator_"), ("oil_lines", "hydraulic_pump_"),
+    ("oil_lines", "generator_"),
     # A borescope boss is let into the case and carries the port that
     # threads into it; the aft mount pad bolts to the turbine rear flange;
     # and the fan cowl door passes over the forward mount pad, which is
@@ -56,7 +71,6 @@ EXPECTED = [
     ("fuel_manifold", "fuel_nozzles"),
 
     ("flange_", "casing_"),
-    ("flange_", "inlet_case"),
     ("flange_", "nozzle_"),
     ("casing_", "casing_"),            # adjacent cans meet at their lands
     ("splitter", "bypass_inner_wall"),
@@ -76,20 +90,14 @@ EXPECTED = [
     ("fan_interstage_seals", "fan_disc_assembly"),
     ("combustor_", "diffuser"),
     ("fuel_nozzles", "combustor_"),
-    ("igniters", "combustor_"),
     ("spraybars", "augmentor_liner"),
     ("flameholder", "augmentor_liner"),
     ("towershaft", "gearbox"),
     ("towershaft", "casing_"),
     ("blades_", "vanes_"),             # rows overlap where the flowpath does
     ("blades_", "hpc_drum"),
-    ("vanes_", "casing_"),
-    ("vanes_", "hpc_drum"),
-    ("diffuser", "vanes_"),
     ("diffuser", "casing_"),
     ("mount_", "casing_"),
-    ("mount_", "turbine_frame_hub"),
-    ("harnesses", "casing_"),
     ("bleed_pipes", "casing_"),
     ("fuel_lines", "casing_"),
     ("oil_lines", "casing_"),
@@ -105,10 +113,6 @@ EXPECTED = [
     ("engine_control", "casing_"),
     ("fan_cowl_door", "casing_"),
     ("fan_door_hardware", "fan_cowl_door"),
-    # the flaps hinge on the casing's aft flange, so their forward edge is
-    # buried in its last 10 mm -- that is the joint, not a mistake
-    ("nozzle_ext_flaps", "casing_augmentor"),
-    ("nozzle_actuator_ring", "casing_augmentor"),
     # the turbine flowpath inner wall is carried on the disc rims: it is the
     # platform between them, so it shares metal with both discs
     ("hpt_disc", "turbine_inner_flowpath"),
@@ -117,7 +121,6 @@ EXPECTED = [
     # unison rings run along the outside of the casing they are mounted to
     ("variable_vane_actuation", "vanes_"),
     ("variable_vane_actuation", "casing_"),
-    ("variable_vane_actuation", "fan_containment"),
     # compressor casing aft flange, diffuser and combustor dome are one
     # bolted joint at station 1600
     ("combustor_dome", "casing_hpc"),
@@ -125,7 +128,6 @@ EXPECTED = [
     ("shaft_", "hpc_"),
     ("shaft_", "fan_"),
     ("shaft_", "lpt_"),
-    ("shaft_", "turbine_"),
 
     # ------------------------------------------------------------------
     # Joints the check could not reach until it stopped spending its
@@ -139,7 +141,6 @@ EXPECTED = [
     # so by construction it is inside both of them
     ("fan_frame_struts", "bypass_inner_wall"), ("fan_frame_struts", "fan_frame_hub"),
     ("fan_frame_struts", "bearing_sumps"), ("fan_frame_struts", "casing_hpc"),
-    ("fan_frame_struts", "hpc_front_cone"), ("fan_frame_struts", "flange_hpc_fwd"),
     ("turbine_frame_struts", "casing_turbine"),
     ("turbine_frame_struts", "flange_turb_aft"),
     ("turbine_frame_struts", "turbine_frame_hub"),
@@ -151,8 +152,8 @@ EXPECTED = [
     # rotors: blades root into their disc, run inside their casing, and
     # the seals run on their tips
     ("blades_", "fan_disc_assembly"), ("blades_", "hpc_drum"),
-    ("blades_", "turbine_inner_flowpath"), ("blades_", "combustor_dome"),
-    ("blades_", "casing_turbine"), ("blades_", "bypass_inner_wall"),
+    ("blades_", "turbine_inner_flowpath"),
+    ("blades_", "bypass_inner_wall"),
     ("blades_", "combustor_liner_"), ("turbine_blade_outer_air_seals", "blades_"),
     ("hpc_front_cone", "hpc_drum"), ("hpc_rear_cone", "hpc_drum"),
     ("turbine_frame_hub", "lpt_disc_assembly"),
@@ -165,40 +166,124 @@ EXPECTED = [
     # ring between the two on the way
     ("towershaft", "bearing_sumps"), ("towershaft", "brg_3_hp_thrust"),
     ("towershaft", "shaft_hp"), ("towershaft", "fan_frame_hub"),
-    ("towershaft", "hpc_front_cone"), ("towershaft", "fan_frame_struts"),
+    ("towershaft", "hpc_front_cone"),
     ("towershaft", "blades_hpc_r1"), ("gearbox", "casing_bypass"),
-    ("fuel_lines", "gearbox"), ("access_panels", "gearbox"),
+    ("access_panels", "gearbox"),
 
     # combustor and fuel: a nozzle is fitted from outside the casings it
     # passes through, which is how it is changed without splitting the engine
     ("fuel_nozzles", "casing_bypass"), ("fuel_nozzles", "casing_hpc"),
-    ("fuel_nozzles", "casing_combustor"), ("fuel_nozzles", "vanes_hpc_s9"),
+    ("fuel_nozzles", "casing_combustor"),
     ("diffuser", "fuel_nozzles"), ("fuel_manifold", "fuel_nozzles"),
-    ("panel_bolts", "fuel_nozzles"), ("diffuser", "hpc_interstage_seals"),
     ("turbine_inner_flowpath", "combustor_liner_inner"),
     ("igniters", "casing_bypass"), ("ignition_exciters", "fan_cowl_door"),
     ("ignition_exciters", "engine_control"),
     ("ignition_exciters", "flange_fan_rear"),
 
     # externals bolt to the casings and to each other
-    ("oil_tank", "flange_fan_rear"), ("oil_tank", "access_panels"),
+    ("oil_tank", "flange_fan_rear"),
     ("heat_exchanger", "flange_fan_rear"), ("harnesses", "fan_containment"),
     ("fan_cowl_door", "engine_control"), ("fan_cowl_door", "vbv_doors"),
     ("fan_door_hardware", "vbv_doors"), ("fan_door_hardware", "casing_bypass"),
     ("mount_links_rear", "t5_harness"), ("mount_links_rear", "flange_turb_aft"),
-    ("nozzle_links", "casing_augmentor"), ("nozzle_actuators", "casing_augmentor"),
-    ("casing_augmentor", "spraybars"), ("oil_lines", "turbine_cooling_manifold"),
+    ("nozzle_actuators", "casing_augmentor"),
+    ("casing_augmentor", "spraybars"),
     ("panel_bolts", "variable_vane_actuation"), ("panel_bolts", "casing_bypass"),
-    ("borescope_ports", "bleed_pipes"),
     ("fan_frame_struts", "splitter"),   # the strut roots in the splitter nose
     # Joints made while closing the circuits, each of which IS the joint:
     # the fuel line onto its manifold, the ignition leads onto the igniter
     # plugs, the convergent flaps hinged on the augmentor's aft flange, and
     # the oil drop into the bearing sumps.
     ("fuel_lines", "fuel_manifold"), ("ignition_exciters", "igniters"),
-    ("nozzle_flaps_convergent", "casing_augmentor"),
-    ("oil_lines", "bearing_sumps"),
 ]
 
+PKG = "engine/parts"
+UNIT = 1.0            # mm of real part per model unit
+TOL = 0.3            # mm, full size: deeper than this is sharing material
+
+# Real defects, in mm of full-size overlap, deepest first. Each one is a part
+# through a part that nobody meant. Fix them and --shrink; never add to it.
+# --- KNOWN: rewritten by --shrink, never by hand to add ---
+KNOWN = {
+    ("bypass_inner_wall", "towershaft"): 65.6,   # at (1550.0, 10.1, -460.8)
+    ("gearbox", "oil_lines"): 54.8,   # at (520.0, 0.0, -715.0)
+    ("fan_cowl_door", "mount_trunnions"): 53.5,   # at (523.0, -348.8, 471.3)
+    ("bleed_pipes", "bypass_inner_wall"): 49.3,   # at (1128.2, -380.2, 326.7)
+    ("gearbox", "ignition_exciters"): 47.4,   # at (518.0, -11.4, -652.4)
+    ("hpc_drum", "towershaft"): 46.6,   # at (820.6, -6.7, -306.8)
+    ("bypass_inner_wall", "mount_trunnions"): 45.4,   # at (2520.0, 261.5, 373.5)
+    ("flange_turb_aft", "mount_trunnions"): 42.7,   # at (2521.2, 276.3, 398.8)
+    ("combustor_dome", "combustor_swirlers"): 42.0,   # at (1604.0, 371.9, 10.9)
+    ("mount_pads", "mount_trunnions"): 39.5,   # at (2524.9, 274.1, 397.7)
+    ("bypass_inner_wall", "fuel_nozzles"): 38.7,   # at (1952.6, 128.8, -442.0)
+    ("bypass_inner_wall", "turbine_cooling_manifold"): 32.2,   # at (1952.6, 238.9, 393.6)
+    ("generator_1", "heat_exchanger"): 32.2,   # at (391.2, 291.0, -660.0)
+    ("oil_lines", "towershaft"): 31.8,   # at (764.7, -74.3, -649.2)
+    ("bearing_sumps", "hpc_front_cone"): 31.0,   # at (765.5, 4.5, -255.2)
+    ("casing_combustor", "igniters"): 30.8,   # at (1795.0, -350.1, -281.0)
+    ("bypass_inner_wall", "igniters"): 29.8,   # at (1952.6, -346.2, -303.6)
+    ("mount_trunnions", "vanes_fan_ogv"): 26.8,   # at (681.6, 327.9, 463.8)
+    ("access_panels", "towershaft"): 26.7,   # at (800.0, -48.3, -575.1)
+    ("harnesses", "ignition_exciters"): 26.4,   # at (1032.8, 57.7, 580.6)
+    ("access_panels", "ignition_exciters"): 25.9,   # at (1150.0, 126.0, 545.7)
+    ("antiice_duct", "vbv_doors"): 25.6,   # at (760.0, -535.5, -295.5)
+    ("flange_fan_rear", "harnesses"): 24.8,   # at (569.0, 209.8, 557.5)
+    ("flange_fan_rear", "fuel_lines"): 23.4,   # at (591.0, 407.2, -434.8)
+    ("bleed_pipes", "variable_vane_actuation"): 22.1,   # at (986.9, 364.0, -302.1)
+    ("bypass_inner_wall", "turbine_frame_struts"): 22.1,   # at (1550.0, -332.9, -318.7)
+    ("antiice_duct", "variable_vane_actuation"): 21.5,   # at (-73.0, -554.3, -320.0)
+    ("brg_2_lp_roller", "fan_frame_hub"): 21.0,   # at (709.0, 148.0, 0.0)
+    ("bypass_inner_wall", "variable_vane_actuation"): 19.8,   # at (1550.0, 109.5, 447.7)
+    ("ignition_exciters", "vbv_doors"): 19.8,   # at (747.2, -301.7, -531.2)
+    ("antiice_duct", "flange_fan_rear"): 19.0,   # at (459.7, -546.6, -292.0)
+    ("access_panels", "variable_vane_actuation"): 18.1,   # at (300.0, -139.6, -590.6)
+    ("bypass_inner_wall", "casing_combustor"): 17.9,   # at (1550.0, -70.1, -455.5)
+    ("heat_exchanger", "oil_lines"): 17.1,   # at (456.0, 475.2, -426.3)
+    ("casing_inlet", "inlet_lip"): 17.0,   # at (-210.0, 578.8, -141.6)
+    ("fan_cowl_door", "flange_fan_rear"): 16.3,   # at (579.5, -77.6, 589.8)
+    ("mixer", "turbine_frame_struts"): 15.2,   # at (2520.0, -258.8, 258.8)
+    ("bypass_inner_wall", "flange_hpc_fwd"): 14.8,   # at (1069.8, -359.1, -314.9)
+    ("harnesses", "vbv_doors"): 14.5,   # at (817.0, 69.1, 599.3)
+    ("fuel_lines", "vbv_doors"): 14.1,   # at (718.6, 407.3, -429.3)
+    ("oil_lines", "t5_harness"): 13.9,   # at (2460.0, 136.4, -497.8)
+    ("harnesses", "turbine_cooling_manifold"): 13.5,   # at (2114.4, 188.4, 498.2)
+    ("fan_disc_assembly", "vanes_fan_s1"): 13.4,   # at (247.5, -204.8, 150.2)
+    ("ignition_exciters", "variable_vane_actuation"): 12.8,   # at (1098.3, -366.7, -465.2)
+    ("bearing_sumps", "shaft_hp"): 12.7,   # at (744.0, 110.1, -67.5)
+    ("antiice_duct", "flange_inlet"): 12.5,   # at (-70.1, -550.0, -298.8)
+    ("bypass_inner_wall", "casing_hpc"): 12.5,   # at (1069.8, -359.1, -314.9)
+    ("harnesses", "variable_vane_actuation"): 12.1,   # at (168.2, 72.1, 628.1)
+    ("bypass_inner_wall", "casing_turbine"): 11.8,   # at (1952.6, -442.0, 128.8)
+    ("access_panels", "fan_door_hardware"): 10.6,   # at (300.0, -10.5, 602.9)
+    ("access_panels", "borescope_ports"): 9.4,   # at (1150.0, 110.8, 544.7)
+    ("fan_door_hardware", "ignition_exciters"): 9.1,   # at (485.1, -92.6, 596.6)
+    ("brg_1_lp_thrust", "fan_disc_assembly"): 8.9,   # at (-83.0, 94.8, 94.8)
+    ("flange_hpc_fwd", "towershaft"): 8.9,   # at (760.0, 15.2, -465.5)
+    ("borescope_ports", "ignition_exciters"): 8.3,   # at (1235.0, 139.2, 538.6)
+    ("brg_3_hp_thrust", "fan_frame_hub"): 8.0,   # at (745.0, -66.2, 134.2)
+    ("engine_control", "fan_door_hardware"): 8.0,   # at (523.0, -440.7, 410.9)
+    ("access_panels", "borescope_bosses"): 7.4,   # at (1150.0, 110.8, 544.7)
+    ("flange_fan_rear", "gearbox"): 7.0,   # at (591.0, 19.5, -595.4)
+    ("augmentor_liner", "mixer"): 6.8,   # at (2745.4, 227.1, -339.8)
+    ("harnesses", "spraybars"): 6.8,   # at (2762.9, 166.8, 463.7)
+    ("bearing_sumps", "spinner"): 6.7,   # at (-40.0, -0.0, -206.0)
+    ("hpt_disc", "shaft_hp"): 6.1,   # at (1932.3, 158.3, 0.0)
+    ("borescope_bosses", "ignition_exciters"): 6.0,   # at (1236.9, 139.4, 538.0)
+    ("access_panels", "fuel_nozzles"): 5.1,   # at (1650.0, -141.5, -510.3)
+    ("bypass_inner_wall", "vanes_fan_ogv"): 5.1,   # at (1550.0, -404.1, 221.7)
+    ("flange_hpc_aft", "fuel_nozzles"): 4.9,   # at (1552.6, -498.9, 5.8)
+    ("access_panels", "turbine_cooling_manifold"): 4.6,   # at (2250.0, 11.5, 505.9)
+    ("bleed_pipes", "fuel_nozzles"): 4.4,   # at (1560.0, 424.0, -355.8)
+    ("turbine_inner_flowpath", "turbine_interstage_seals"): 3.9,   # at (2115.8, 300.0, 0.0)
+    ("casing_fan", "fan_door_hardware"): 3.4,   # at (492.4, 141.1, 576.6)
+    ("fan_disc_assembly", "vanes_fan_s2"): 3.1,   # at (472.5, 292.3, 71.5)
+    ("oil_lines", "oil_tank"): 2.9,   # at (502.0, 558.9, 331.3)
+    ("fan_disc_assembly", "fan_frame_hub"): 2.8,   # at (565.0, -31.3, -107.5)
+    ("blades_lpt_s2", "lpt_disc_assembly"): 1.4,   # at (2272.0, 254.8, -144.7)
+}
+# --- end KNOWN ---
+
 if __name__ == "__main__":
-    sys.exit(0 if _intersect.run(ROOT, "engine/parts", EXPECTED) else 1)
+    import _interfere
+    sys.exit(_interfere.intersect_main(__file__, ROOT, PKG, EXPECTED, KNOWN,
+                                       TOL, UNIT))
