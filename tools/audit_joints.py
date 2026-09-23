@@ -55,7 +55,8 @@ CIRCUITS = [
     ("the turbine frame carries the rear bearing into the case",
      ["casing_turbine", "turbine_frame_struts", "turbine_frame_hub"]),
     ("core gas path: fan to splitter to compressor",
-     ["blades_fan_r3", "splitter", "fan_frame_struts", "casing_hpc"]),
+     ["vanes_fan_ogv", "bypass_struts", "splitter", "fan_frame_struts",
+      "casing_hpc"]),
     ("compressor to diffuser to combustor",
      ["vanes_hpc_s9", "diffuser", "combustor_dome"]),
     ("and the diffuser carries both liners",
@@ -63,9 +64,10 @@ CIRCUITS = [
     ("combustor to turbine",
      ["combustor_liner_inner", "blades_hpt_ngv", "blades_hpt_r1",
       "hpt_disc"]),
+    # through the static structure: the LP turbine's disc turns inside the
+    # frame and must not touch it, so the path runs case, frame, mixer
     ("turbine to mixer to augmentor",
-     ["lpt_disc_assembly", "turbine_frame_hub", "turbine_frame_struts",
-      "mixer", "augmentor_liner"]),
+     ["casing_turbine", "turbine_frame_struts", "mixer", "augmentor_liner"]),
     ("the nozzle hangs off the augmentor case",
      ["casing_augmentor", "nozzle_flaps_convergent", "nozzle_flaps_divergent",
       "nozzle_ext_flaps"]),

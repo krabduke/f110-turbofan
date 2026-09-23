@@ -70,7 +70,7 @@ def setup_lights():
     # rim: behind and above, separates the nozzle from the background
     area_light("rim", (X_MID + 8.0, 4.0, 4.2),
                (math.radians(64), 0, math.radians(116)), 2600, 5.0)
-    # nose kicker: picks out the spinner and fan face
+    # nose kicker: picks out the centre-body and fan face
     area_light("nose", (X_MID - 8.0, -2.6, 1.6),
                (math.radians(76), 0, math.radians(-70)), 1400, 4.0)
 

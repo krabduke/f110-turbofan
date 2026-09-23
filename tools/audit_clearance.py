@@ -45,7 +45,7 @@ SPOOL_MIN = 0.0      # mm -- nothing rotating may cross a bore at all
 # bore as well. Anything not listed is either outside the casings or is the
 # casing, and is the intersection audit's business rather than this one's.
 SPOOL = (
-    "spinner", "fan_disc_assembly", "hpc_drum", "hpc_front_cone",
+    "fan_disc_assembly", "hpc_drum", "hpc_front_cone",
     "hpc_rear_cone", "hpt_disc", "lpt_disc_assembly",
     "fan_interstage_seals", "hpc_interstage_seals", "turbine_interstage_seals",
     "turbine_blade_outer_air_seals",

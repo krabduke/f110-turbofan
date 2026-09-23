@@ -4,7 +4,7 @@ SAMPLES ?= 128
 
 .PHONY: all build verify render turntable anim ignite export web stl viewer clean
 
-all: build verify render export
+all: build verify render export web
 
 build:                       ## generate geometry and assemble the .blend
 	$(BLENDER) --background --python engine/assemble.py

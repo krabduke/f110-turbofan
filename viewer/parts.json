@@ -16,7 +16,7 @@
   "igv": -90.0,
   "fan_face": 0.0,
   "fan_exit": 560.0,
-  "splitter": 580.0,
+  "splitter": 715.0,
   "fan_frame": 700.0,
   "hpc_inlet": 760.0,
   "hpc_exit": 1541.4,
@@ -120,7 +120,7 @@
     575.0
    ],
    [
-    580.0,
+    715.0,
     344.0,
     486.0
    ],
@@ -182,7 +182,7 @@
   ],
   "bypass": [
    [
-    580.0,
+    715.0,
     486.0,
     575.0
    ],
@@ -280,7 +280,7 @@
   ],
   "bypass_t": [
    [
-    580.0,
+    715.0,
     95
    ],
    [
@@ -298,7 +298,7 @@
    "x0": -400.0,
    "x1": 1108.4,
    "parts": 18,
-   "faces": 308812
+   "faces": 324076
   },
   {
    "key": "02 HP Compressor",
@@ -308,7 +308,7 @@
    "x0": 728.2,
    "x1": 1539.6,
    "parts": 22,
-   "faces": 848178
+   "faces": 889218
   },
   {
    "key": "03 Combustor",
@@ -318,7 +318,7 @@
    "x0": 1541.4,
    "x1": 1980.0,
    "parts": 8,
-   "faces": 26656
+   "faces": 26144
   },
   {
    "key": "04 Turbines",
@@ -326,9 +326,9 @@
    "color": "#A6512C",
    "kind": "gas",
    "x0": 1499.2,
-   "x1": 2490.0,
+   "x1": 2410.0,
    "parts": 12,
-   "faces": 261108
+   "faces": 308896
   },
   {
    "key": "05 Augmentor",
@@ -338,7 +338,7 @@
    "x0": 2520.0,
    "x1": 3640.0,
    "parts": 4,
-   "faces": 28872
+   "faces": 26292
   },
   {
    "key": "06 Nozzle",
@@ -358,7 +358,7 @@
    "x0": -420.0,
    "x1": 3661.0,
    "parts": 23,
-   "faces": 70724
+   "faces": 70868
   },
   {
    "key": "08 Shafts and Bearings",
@@ -366,7 +366,7 @@
    "color": "#7D7E78",
    "kind": "struct",
    "x0": -140.0,
-   "x1": 2496.0,
+   "x1": 2520.0,
    "parts": 7,
    "faces": 21436
   },
@@ -386,7 +386,7 @@
    "m": "01 Inlet and Fan",
    "mat": "titanium",
    "x0": 3.5,
-   "x1": 201.5,
+   "x1": 199.2,
    "f": 21088,
    "n": null,
    "spool": "lp",
@@ -395,8 +395,8 @@
   "blades_fan_r2": {
    "m": "01 Inlet and Fan",
    "mat": "titanium",
-   "x0": 298.5,
-   "x1": 436.5,
+   "x0": 300.7,
+   "x1": 434.2,
    "f": 28996,
    "n": null,
    "spool": "lp",
@@ -405,8 +405,8 @@
   "blades_fan_r3": {
    "m": "01 Inlet and Fan",
    "mat": "titanium",
-   "x0": 511.0,
-   "x1": 619.0,
+   "x0": 512.8,
+   "x1": 617.2,
    "f": 34268,
    "n": null,
    "spool": "lp",
@@ -416,7 +416,7 @@
    "m": "02 HP Compressor",
    "mat": "titanium",
    "x0": 781.0,
-   "x1": 860.2,
+   "x1": 858.9,
    "f": 25042,
    "n": null,
    "spool": "hp",
@@ -425,8 +425,8 @@
   "blades_hpc_r2": {
    "m": "02 HP Compressor",
    "mat": "titanium",
-   "x0": 907.2,
-   "x1": 976.8,
+   "x0": 908.4,
+   "x1": 975.6,
    "f": 28996,
    "n": null,
    "spool": "hp",
@@ -435,8 +435,8 @@
   "blades_hpc_r3": {
    "m": "02 HP Compressor",
    "mat": "titanium",
-   "x0": 1020.3,
-   "x1": 1081.5,
+   "x0": 1021.3,
+   "x1": 1080.5,
    "f": 32950,
    "n": null,
    "spool": "hp",
@@ -445,8 +445,8 @@
   "blades_hpc_r4": {
    "m": "02 HP Compressor",
    "mat": "titanium",
-   "x0": 1122.3,
-   "x1": 1176.3,
+   "x0": 1123.2,
+   "x1": 1175.4,
    "f": 36904,
    "n": null,
    "spool": "hp",
@@ -455,8 +455,8 @@
   "blades_hpc_r5": {
    "m": "02 HP Compressor",
    "mat": "titanium",
-   "x0": 1213.1,
-   "x1": 1261.1,
+   "x0": 1213.9,
+   "x1": 1260.3,
    "f": 40858,
    "n": null,
    "spool": "hp",
@@ -465,8 +465,8 @@
   "blades_hpc_r6": {
    "m": "02 HP Compressor",
    "mat": "titanium",
-   "x0": 1294.7,
-   "x1": 1336.7,
+   "x0": 1295.4,
+   "x1": 1336.0,
    "f": 44812,
    "n": null,
    "spool": "hp",
@@ -475,8 +475,8 @@
   "blades_hpc_r7": {
    "m": "02 HP Compressor",
    "mat": "titanium",
-   "x0": 1367.0,
-   "x1": 1404.2,
+   "x0": 1367.6,
+   "x1": 1403.6,
    "f": 48766,
    "n": null,
    "spool": "hp",
@@ -485,8 +485,8 @@
   "blades_hpc_r8": {
    "m": "02 HP Compressor",
    "mat": "titanium",
-   "x0": 1431.9,
-   "x1": 1464.3,
+   "x0": 1432.4,
+   "x1": 1463.8,
    "f": 52720,
    "n": null,
    "spool": "hp",
@@ -495,8 +495,8 @@
   "blades_hpc_r9": {
    "m": "02 HP Compressor",
    "mat": "titanium",
-   "x0": 1488.4,
-   "x1": 1517.2,
+   "x0": 1488.9,
+   "x1": 1516.7,
    "f": 56674,
    "n": null,
    "spool": "hp",
@@ -545,8 +545,8 @@
   "brg_5_lp_roller": {
    "m": "08 Shafts and Bearings",
    "mat": "steel",
-   "x0": 2391.0,
-   "x1": 2429.0,
+   "x0": 2456.0,
+   "x1": 2494.0,
    "f": 2256,
    "n": null,
    "spool": null,
@@ -555,9 +555,9 @@
   "fan_disc_assembly": {
    "m": "01 Inlet and Fan",
    "mat": "titanium",
-   "x0": -120.0,
+   "x0": -2.0,
    "x1": 612.8,
-   "f": 21504,
+   "f": 22656,
    "n": null,
    "spool": "lp",
    "spin": 1.0
@@ -626,18 +626,8 @@
    "m": "08 Shafts and Bearings",
    "mat": "steel",
    "x0": -140.0,
-   "x1": 2496.0,
+   "x1": 2520.0,
    "f": 2016,
-   "n": null,
-   "spool": "lp",
-   "spin": 1.0
-  },
-  "spinner": {
-   "m": "01 Inlet and Fan",
-   "mat": "titanium",
-   "x0": -400.0,
-   "x1": 40.0,
-   "f": 9792,
    "n": null,
    "spool": "lp",
    "spin": 1.0
@@ -655,7 +645,7 @@
   "bypass_inner_wall": {
    "m": "07 Casings and Frames",
    "mat": "casing_alloy",
-   "x0": 580.0,
+   "x0": 715.0,
    "x1": 2520.0,
    "f": 1440,
    "n": null,
@@ -695,9 +685,9 @@
   "casing_combustor": {
    "m": "07 Casings and Frames",
    "mat": "hot_nickel",
-   "x0": 1600.0,
+   "x0": 1540.0,
    "x1": 1990.0,
-   "f": 2880,
+   "f": 3024,
    "n": null,
    "spool": null,
    "spin": null
@@ -716,7 +706,7 @@
    "m": "07 Casings and Frames",
    "mat": "casing_alloy",
    "x0": 714.0,
-   "x1": 1600.0,
+   "x1": 1546.0,
    "f": 7776,
    "n": null,
    "spool": null,
@@ -742,12 +732,22 @@
    "spool": null,
    "spin": null
   },
+  "centre_body": {
+   "m": "01 Inlet and Fan",
+   "mat": "titanium",
+   "x0": -400.0,
+   "x1": -3.0,
+   "f": 9504,
+   "n": null,
+   "spool": null,
+   "spin": null
+  },
   "fan_frame_hub": {
    "m": "07 Casings and Frames",
    "mat": "casing_alloy",
-   "x0": 610.0,
-   "x1": 790.0,
-   "f": 1152,
+   "x0": 616.0,
+   "x1": 718.0,
+   "f": 576,
    "n": null,
    "spool": null,
    "spin": null
@@ -875,9 +875,9 @@
   "splitter": {
    "m": "07 Casings and Frames",
    "mat": "titanium",
-   "x0": 546.0,
-   "x1": 640.0,
-   "f": 2160,
+   "x0": 685.0,
+   "x1": 725.0,
+   "f": 3312,
    "n": null,
    "spool": null,
    "spin": null
@@ -885,9 +885,9 @@
   "turbine_frame_hub": {
    "m": "07 Casings and Frames",
    "mat": "hot_nickel",
-   "x0": 2450.0,
-   "x1": 2590.0,
-   "f": 1152,
+   "x0": 2440.0,
+   "x1": 2630.0,
+   "f": 576,
    "n": null,
    "spool": null,
    "spin": null
@@ -905,9 +905,9 @@
   "vanes_fan_ogv": {
    "m": "01 Inlet and Fan",
    "mat": "composite",
-   "x0": 613.4,
+   "x0": 615.8,
    "x1": 681.6,
-   "f": 52960,
+   "f": 57760,
    "n": null,
    "spool": null,
    "spin": null
@@ -917,7 +917,7 @@
    "mat": "titanium",
    "x0": 206.0,
    "x1": 299.0,
-   "f": 39720,
+   "f": 43320,
    "n": null,
    "spool": null,
    "spin": null
@@ -926,8 +926,8 @@
    "m": "01 Inlet and Fan",
    "mat": "titanium",
    "x0": 437.8,
-   "x1": 512.2,
-   "f": 47664,
+   "x1": 511.7,
+   "f": 51984,
    "n": null,
    "spool": null,
    "spin": null
@@ -935,9 +935,9 @@
   "vanes_hpc_s1": {
    "m": "02 HP Compressor",
    "mat": "steel",
-   "x0": 854.0,
-   "x1": 911.0,
-   "f": 34424,
+   "x0": 857.3,
+   "x1": 908.5,
+   "f": 37544,
    "n": null,
    "spool": null,
    "spin": null
@@ -945,9 +945,9 @@
   "vanes_hpc_s2": {
    "m": "02 HP Compressor",
    "mat": "steel",
-   "x0": 972.6,
-   "x1": 1023.4,
-   "f": 38396,
+   "x0": 975.0,
+   "x1": 1021.2,
+   "f": 41876,
    "n": null,
    "spool": null,
    "spin": null
@@ -955,9 +955,9 @@
   "vanes_hpc_s3": {
    "m": "02 HP Compressor",
    "mat": "steel",
-   "x0": 1078.2,
-   "x1": 1124.0,
-   "f": 42368,
+   "x0": 1080.3,
+   "x1": 1122.4,
+   "f": 46208,
    "n": null,
    "spool": null,
    "spin": null
@@ -965,9 +965,9 @@
   "vanes_hpc_s4": {
    "m": "02 HP Compressor",
    "mat": "steel",
-   "x0": 1173.5,
-   "x1": 1214.5,
-   "f": 46340,
+   "x0": 1175.4,
+   "x1": 1213.1,
+   "f": 50540,
    "n": null,
    "spool": null,
    "spin": null
@@ -975,9 +975,9 @@
   "vanes_hpc_s5": {
    "m": "02 HP Compressor",
    "mat": "steel",
-   "x0": 1259.7,
-   "x1": 1295.7,
-   "f": 50312,
+   "x0": 1260.9,
+   "x1": 1294.5,
+   "f": 54872,
    "n": null,
    "spool": null,
    "spin": null
@@ -985,9 +985,9 @@
   "vanes_hpc_s6": {
    "m": "02 HP Compressor",
    "mat": "steel",
-   "x0": 1335.7,
-   "x1": 1367.9,
-   "f": 54284,
+   "x0": 1336.8,
+   "x1": 1366.7,
+   "f": 59204,
    "n": null,
    "spool": null,
    "spin": null
@@ -995,9 +995,9 @@
   "vanes_hpc_s7": {
    "m": "02 HP Compressor",
    "mat": "steel",
-   "x0": 1403.3,
-   "x1": 1431.9,
-   "f": 58256,
+   "x0": 1404.4,
+   "x1": 1431.1,
+   "f": 63536,
    "n": null,
    "spool": null,
    "spin": null
@@ -1005,9 +1005,9 @@
   "vanes_hpc_s8": {
    "m": "02 HP Compressor",
    "mat": "steel",
-   "x0": 1463.6,
-   "x1": 1488.4,
-   "f": 62228,
+   "x0": 1464.6,
+   "x1": 1487.7,
+   "f": 67868,
    "n": null,
    "spool": null,
    "spin": null
@@ -1015,9 +1015,9 @@
   "vanes_hpc_s9": {
    "m": "02 HP Compressor",
    "mat": "steel",
-   "x0": 1517.2,
+   "x0": 1517.9,
    "x1": 1539.6,
-   "f": 66200,
+   "f": 72200,
    "n": null,
    "spool": null,
    "spin": null
@@ -1027,7 +1027,7 @@
    "mat": "titanium",
    "x0": -98.4,
    "x1": -11.6,
-   "f": 18536,
+   "f": 20216,
    "n": null,
    "spool": null,
    "spin": null
@@ -1057,7 +1057,7 @@
    "mat": "hot_nickel",
    "x0": 1620.0,
    "x1": 1980.0,
-   "f": 7072,
+   "f": 6368,
    "n": null,
    "spool": null,
    "spin": null
@@ -1067,7 +1067,7 @@
    "mat": "hot_nickel",
    "x0": 1620.0,
    "x1": 1980.0,
-   "f": 6144,
+   "f": 6336,
    "n": null,
    "spool": null,
    "spin": null
@@ -1125,9 +1125,9 @@
   "blades_hpt_ngv": {
    "m": "04 Turbines",
    "mat": "hot_nickel",
-   "x0": 1957.5,
-   "x1": 2050.0,
-   "f": 11132,
+   "x0": 1962.3,
+   "x1": 2048.2,
+   "f": 30912,
    "n": "46",
    "spool": null,
    "spin": null
@@ -1165,9 +1165,9 @@
   "blades_lpt_s1": {
    "m": "04 Turbines",
    "mat": "hot_nickel",
-   "x0": 2134.5,
-   "x1": 2191.5,
-   "f": 60698,
+   "x0": 2125.2,
+   "x1": 2191.3,
+   "f": 84506,
    "n": "62",
    "spool": null,
    "spin": null
@@ -1177,7 +1177,7 @@
    "mat": "hot_nickel",
    "x0": 2247.2,
    "x1": 2296.8,
-   "f": 46340,
+   "f": 50540,
    "n": null,
    "spool": null,
    "spin": null
@@ -1186,7 +1186,7 @@
    "m": "04 Turbines",
    "mat": "hot_nickel",
    "x0": 1920.0,
-   "x1": 2113.8,
+   "x1": 2104.2,
    "f": 1344,
    "n": null,
    "spool": "hp",
@@ -1196,7 +1196,7 @@
    "m": "04 Turbines",
    "mat": "hot_nickel",
    "x0": 2189.6,
-   "x1": 2490.0,
+   "x1": 2401.0,
    "f": 2688,
    "n": null,
    "spool": "lp",
@@ -1237,7 +1237,7 @@
    "mat": "thermal_barrier",
    "x0": 2740.0,
    "x1": 3640.0,
-   "f": 13716,
+   "f": 11136,
    "n": null,
    "spool": null,
    "spin": null
@@ -1366,7 +1366,7 @@
    "m": "09 Accessories",
    "mat": "steel",
    "x0": -114.0,
-   "x1": 2464.0,
+   "x1": 2529.0,
    "f": 1260,
    "n": null,
    "spool": null,

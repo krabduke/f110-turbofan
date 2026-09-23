@@ -30,7 +30,6 @@ DETACHED = {
     "engine_control": 5,
     "heat_exchanger": 4,
     "nozzle_seals": 12,
-    "vanes_fan_ogv": 72,
 }
 # --- end DETACHED ---
 

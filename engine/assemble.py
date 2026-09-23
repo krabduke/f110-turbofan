@@ -62,7 +62,7 @@ def spool_for(name):
     other way.
     """
     import re as _re
-    LP = ("spinner", "fan_disc_assembly", "fan_interstage_seals",
+    LP = ("fan_disc_assembly", "fan_interstage_seals",
           "shaft_lp", "lpt_disc_assembly")
     HP = ("hpc_drum", "hpc_front_cone", "hpc_rear_cone",
           "hpc_interstage_seals", "shaft_hp", "hpt_disc")

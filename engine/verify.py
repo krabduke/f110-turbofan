@@ -105,7 +105,7 @@ def main():
     spun = [r for r in rows if (r.get("spool") or "")]
     turning = re.compile(r"^(blades_(fan|hpc|hpt|lpt)_r\d+|shaft_(lp|hp)"
                          r"|hpc_drum|hpt_disc|fan_disc_assembly"
-                         r"|lpt_disc_assembly|spinner)$")
+                         r"|lpt_disc_assembly)$")
     missed = [r["name"] for r in rows
               if turning.match(r["name"]) and not (r.get("spool") or "")]
     stray = [r["name"] for r in spun if not turning.match(r["name"])
@@ -152,7 +152,7 @@ def main():
     c.true("no empty meshes",
            all(int(r["verts"]) > 0 for r in rows), "all non-empty")
 
-    expect = ["spinner", "combustor_dome", "fuel_nozzles", "igniters",
+    expect = ["centre_body", "combustor_dome", "fuel_nozzles", "igniters",
               "hpt_disc", "lpt_disc_assembly", "shaft_lp", "shaft_hp",
               "mixer", "flameholder", "spraybars", "augmentor_liner",
               "nozzle_flaps_convergent", "nozzle_flaps_divergent",
@@ -171,11 +171,17 @@ def main():
            f"{spec.total_airfoil_count():,} across {len(spec.all_blade_rows())} rows")
 
     print("\nCONSISTENCY")
-    c.close("spinner base meets fan hub",
-            spec.SPINNER["base_radius"], spec.FAN_ROWS[1].r_hub_le, 6.0)
-    c.true("spinner inside inlet",
-           spec.SPINNER["x_nose"] >= spec.STATION["inlet_lip"],
-           f"nose {spec.SPINNER['x_nose']:.0f} >= lip {spec.STATION['inlet_lip']:.0f}")
+    cb = spec.CENTRE_BODY
+    igv = spec.FAN_ROWS[0]
+    c.true("centre-body carries the guide vanes' hub",
+           igv.r_hub_le - 12.0 <= cb["hub_radius"] <= igv.r_hub_le,
+           f"r {cb['hub_radius']:.0f} under an IGV hub at {igv.r_hub_le:.0f}")
+    c.true("centre-body stands clear of the fan",
+           cb["x_aft"] < spec.FAN_ROWS[1].x - 20.0,
+           f"ends at {cb['x_aft']:.0f}, fan rotor 1 at {spec.FAN_ROWS[1].x:.0f}")
+    c.true("centre-body inside inlet",
+           cb["x_nose"] >= spec.STATION["inlet_lip"],
+           f"nose {cb['x_nose']:.0f} >= lip {spec.STATION['inlet_lip']:.0f}")
     c.true("stations monotonic",
            all(spec.STATION[a] <= spec.STATION[b] for a, b in [
                ("fan_face", "fan_exit"), ("fan_exit", "hpc_inlet"),

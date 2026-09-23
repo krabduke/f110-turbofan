@@ -22,7 +22,7 @@ CFG = {
 
     "singletons": {
         "fan case": (("casing_fan",), 1),
-        "spinner": (("spinner",), 1),
+        "centre-body": (("centre_body",), 1),
         "LP shaft": (("shaft_lp",), 1),
         "HP shaft": (("shaft_hp",), 1),
         "combustor dome": (("combustor_dome",), 1),
