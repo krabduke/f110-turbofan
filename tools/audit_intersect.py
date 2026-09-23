@@ -58,6 +58,8 @@ EXPECTED = [
     # the T5 rake's harness ring collects eight thermocouple leads and hands
     # them to the engine loom, which is what a harness ring is for
     ("harnesses", "t5_harness"),
+    # the control unit's harness ends in a plug mated over its connector
+    ("engine_control", "harnesses"),
 
     # The fan frame's struts and the outlet guide vanes are one piece of
     # structure on a real engine -- the OGVs carry the frame load, which is

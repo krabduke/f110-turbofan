@@ -358,7 +358,7 @@
    "x0": -420.0,
    "x1": 3661.0,
    "parts": 23,
-   "faces": 70868
+   "faces": 70884
   },
   {
    "key": "08 Shafts and Bearings",
@@ -375,10 +375,10 @@
    "label": "Accessories",
    "color": "#727868",
    "kind": "struct",
-   "x0": -364.0,
+   "x0": -373.0,
    "x1": 3528.0,
    "parts": 25,
-   "faces": 21196
+   "faces": 21804
   }
  ],
  "parts": {
@@ -837,7 +837,7 @@
    "mat": "casing_alloy",
    "x0": -420.0,
    "x1": 0.0,
-   "f": 1440,
+   "f": 1456,
    "n": null,
    "spool": null,
    "spin": null
@@ -1355,9 +1355,9 @@
   "antiice_duct": {
    "m": "09 Accessories",
    "mat": "steel",
-   "x0": -364.0,
+   "x0": -373.0,
    "x1": 1181.1,
-   "f": 1006,
+   "f": 1198,
    "n": null,
    "spool": null,
    "spin": null
@@ -1487,7 +1487,7 @@
    "mat": "rubber",
    "x0": 52.0,
    "x1": 3528.0,
-   "f": 1170,
+   "f": 1586,
    "n": null,
    "spool": null,
    "spin": null
@@ -1495,8 +1495,8 @@
   "heat_exchanger": {
    "m": "09 Accessories",
    "mat": "steel",
-   "x0": 295.0,
-   "x1": 617.0,
+   "x0": 292.0,
+   "x1": 620.0,
    "f": 724,
    "n": null,
    "spool": null,

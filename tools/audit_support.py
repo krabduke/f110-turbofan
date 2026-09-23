@@ -25,11 +25,6 @@ TOL = 0.3            # mm, full size: further off than this is not touching
 
 # --- DETACHED: rewritten by --shrink, never by hand to add ---
 DETACHED = {
-    "antiice_duct": 1,
-    "blades_hpt_r1": 1,
-    "engine_control": 5,
-    "heat_exchanger": 4,
-    "nozzle_seals": 12,
 }
 # --- end DETACHED ---
 
