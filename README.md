@@ -1,3 +1,7 @@
+> **This is v1.** It models the GE F110-GE-129 and is kept here as it was, tagged `v1`.
+> Version 2 is an original engine designed from scratch, the **Aether AX-1** adaptive-cycle
+> turbofan: [github.com/Krabduke/aether-ax1](https://github.com/Krabduke/aether-ax1).
+
 # F110-GE-129 — parametric 3D model
 
 A complete, dimensionally-driven 3D model of the **F110-GE-129** augmented
