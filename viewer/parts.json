@@ -318,7 +318,7 @@
    "x0": 1541.4,
    "x1": 1980.0,
    "parts": 8,
-   "faces": 36288
+   "faces": 36320
   },
   {
    "key": "04 Turbines",
@@ -328,7 +328,7 @@
    "x0": 1499.2,
    "x1": 2410.0,
    "parts": 12,
-   "faces": 308896
+   "faces": 360136
   },
   {
    "key": "05 Augmentor",
@@ -1047,7 +1047,7 @@
    "mat": "hot_nickel",
    "x0": 1587.3,
    "x1": 1620.0,
-   "f": 10080,
+   "f": 10112,
    "n": null,
    "spool": null,
    "spin": null
@@ -1125,9 +1125,9 @@
   "blades_hpt_ngv": {
    "m": "04 Turbines",
    "mat": "hot_nickel",
-   "x0": 1962.3,
+   "x0": 1978.0,
    "x1": 2048.2,
-   "f": 30912,
+   "f": 50646,
    "n": "46",
    "spool": null,
    "spin": null
@@ -1135,9 +1135,9 @@
   "blades_hpt_r1": {
    "m": "04 Turbines",
    "mat": "hot_nickel",
-   "x0": 2011.7,
+   "x0": 2050.2,
    "x1": 2107.8,
-   "f": 14112,
+   "f": 65520,
    "n": "72",
    "spool": "hp",
    "spin": -1.0
@@ -1165,9 +1165,9 @@
   "blades_lpt_s1": {
    "m": "04 Turbines",
    "mat": "hot_nickel",
-   "x0": 2125.2,
+   "x0": 2134.5,
    "x1": 2191.3,
-   "f": 84506,
+   "f": 64604,
    "n": "62",
    "spool": null,
    "spin": null

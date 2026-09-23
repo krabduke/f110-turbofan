@@ -136,9 +136,15 @@ def apply_cutters(obj, cut_verts, cut_faces):
     """Boolean-difference a joined cutter mesh out of obj, then bin the cutter."""
     cutter = make_object(obj.name + "__cutter", cut_verts, cut_faces,
                          bpy.context.scene.collection)
+    # an exact boolean reads inside from outside off the normals, and a
+    # cutter is joined from pieces authored in whatever winding they came in
+    recalc_normals(cutter)
     m = obj.modifiers.new("holes", "BOOLEAN")
     m.operation = "DIFFERENCE"
     m.solver = "EXACT"
+    # a cutter is often several solids joined, overlapping one another --
+    # the dome's swirler holes and the stem holes through its cowl
+    m.use_self = True
     m.object = cutter
     bpy.context.view_layer.objects.active = obj
     try:
@@ -261,6 +267,10 @@ def main():
             cname = collection_for(name)
             obj = make_object(name, verts, faces, cols[cname])
 
+            # outward before cutting, not only after: the boolean takes the
+            # part's inside from its normals too
+            if name in cutters:
+                recalc_normals(obj)
             for cut in cutters.get(name, ()):
                 n_bool += 1
                 if apply_cutters(obj, *cut):
@@ -316,6 +326,11 @@ def main():
     tf = sum(r["faces"] for r in rows)
     print(f"\n{len(rows)} objects | {tv:,} verts | {tf:,} faces")
     print(f"booleans: {n_bool_ok}/{n_bool} applied")
+    if n_bool_ok < n_bool:
+        # a cut that did not go through leaves the material it was meant to
+        # remove, and every audit downstream would measure a part that was
+        # never built
+        raise SystemExit(f"{n_bool - n_bool_ok} booleans failed")
     print(f"sharp edges marked: {n_sharp:,}")
     print(f"parts.csv -> {csv_path}")
 
