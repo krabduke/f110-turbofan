@@ -18,7 +18,12 @@ CFG = {
     "exempt_mirror": {},
     "distinct_tol_mm": 0.5,
     "exempt_distinct": {},
-    "exempt_shape": {},
+    "exempt_shape": {
+        # a combustor's dome is the bulkhead across the head of the
+        # annulus, which is what the word means in a combustor; it is 33 mm
+        # deep and 877 across, and the rule is for caps
+        "combustor_dome": "a combustor dome is a bulkhead, not a cap",
+    },
 
     "singletons": {
         "fan case": (("casing_fan",), 1),

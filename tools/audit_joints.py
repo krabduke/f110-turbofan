@@ -57,10 +57,14 @@ CIRCUITS = [
     ("core gas path: fan to splitter to compressor",
      ["vanes_fan_ogv", "bypass_struts", "splitter", "fan_frame_struts",
       "casing_hpc"]),
-    ("compressor to diffuser to combustor",
-     ["vanes_hpc_s9", "diffuser", "combustor_dome"]),
-    ("and the diffuser carries both liners",
-     ["diffuser", "combustor_liner_outer", "igniters"]),
+    ("compressor discharges into the diffuser, flanged to its case",
+     ["vanes_hpc_s9", "diffuser", "casing_hpc"]),
+    # the diffuser ends a dump gap short of the dome; it used to run on
+    # through the dome onto the liners and was what held them up
+    ("the dome hangs from the case on its pins and carries both liners",
+     ["casing_combustor", "combustor_dome", "combustor_liner_outer",
+      "igniters"]),
+    ("and the inner liner", ["combustor_dome", "combustor_liner_inner"]),
     ("combustor to turbine",
      ["combustor_liner_inner", "blades_hpt_ngv", "blades_hpt_r1",
       "hpt_disc"]),

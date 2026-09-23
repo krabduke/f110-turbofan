@@ -318,7 +318,7 @@
    "x0": 1541.4,
    "x1": 1980.0,
    "parts": 8,
-   "faces": 26144
+   "faces": 36288
   },
   {
    "key": "04 Turbines",
@@ -378,7 +378,7 @@
    "x0": -364.0,
    "x1": 3528.0,
    "parts": 25,
-   "faces": 19008
+   "faces": 21196
   }
  ],
  "parts": {
@@ -1045,9 +1045,9 @@
   "combustor_dome": {
    "m": "03 Combustor",
    "mat": "hot_nickel",
-   "x0": 1555.6,
-   "x1": 1646.0,
-   "f": 2736,
+   "x0": 1587.3,
+   "x1": 1620.0,
+   "f": 10080,
    "n": null,
    "spool": null,
    "spin": null
@@ -1086,7 +1086,7 @@
    "m": "03 Combustor",
    "mat": "hot_nickel",
    "x0": 1541.4,
-   "x1": 1640.0,
+   "x1": 1577.0,
    "f": 1296,
    "n": null,
    "spool": null,
@@ -1107,7 +1107,7 @@
    "mat": "steel",
    "x0": 1550.0,
    "x1": 1638.0,
-   "f": 4400,
+   "f": 7200,
    "n": null,
    "spool": null,
    "spin": null
@@ -1235,7 +1235,7 @@
   "augmentor_liner": {
    "m": "05 Augmentor",
    "mat": "thermal_barrier",
-   "x0": 2740.0,
+   "x0": 2762.0,
    "x1": 3640.0,
    "f": 11136,
    "n": null,
@@ -1357,7 +1357,7 @@
    "mat": "steel",
    "x0": -364.0,
    "x1": 1181.1,
-   "f": 846,
+   "f": 1006,
    "n": null,
    "spool": null,
    "spin": null
@@ -1377,7 +1377,7 @@
    "mat": "casing_alloy",
    "x0": 817.4,
    "x1": 1565.6,
-   "f": 798,
+   "f": 1554,
    "n": null,
    "spool": null,
    "spin": null
@@ -1427,7 +1427,7 @@
    "mat": "casing_alloy",
    "x0": 316.9,
    "x1": 680.2,
-   "f": 1218,
+   "f": 1362,
    "n": null,
    "spool": null,
    "spin": null
@@ -1437,7 +1437,7 @@
    "mat": "steel",
    "x0": 559.3,
    "x1": 1582.2,
-   "f": 416,
+   "f": 512,
    "n": null,
    "spool": null,
    "spin": null
@@ -1487,7 +1487,7 @@
    "mat": "rubber",
    "x0": 52.0,
    "x1": 3528.0,
-   "f": 690,
+   "f": 1170,
    "n": null,
    "spool": null,
    "spin": null
@@ -1526,8 +1526,8 @@
    "m": "09 Accessories",
    "mat": "steel",
    "x0": 470.0,
-   "x1": 1766.0,
-   "f": 452,
+   "x1": 1765.9,
+   "f": 596,
    "n": null,
    "spool": null,
    "spin": null
@@ -1557,7 +1557,7 @@
    "mat": "steel",
    "x0": 439.7,
    "x1": 2520.4,
-   "f": 782,
+   "f": 1190,
    "n": null,
    "spool": null,
    "spin": null
